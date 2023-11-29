@@ -10,6 +10,7 @@ from .models import (
     Product,
     Tag,
     ProductFeature,
+    Banner,
 )
 
 admin.site.unregister(Group)
@@ -51,3 +52,8 @@ class ProductAdmin(ModelAdmin):
 @admin.register(Tag)
 class TagAdmin(ModelAdmin):
     list_display = ("title",)
+
+
+@admin.register(Banner)
+class BannerAdmin(ModelAdmin):
+    pass
