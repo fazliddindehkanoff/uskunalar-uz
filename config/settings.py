@@ -117,7 +117,7 @@ LANGUAGES = [
     ("uz", _("Uzbek")),
     ("ru", _("Russian")),
 ]
-
+DEFAULT_LANGUAGE = "uz"
 
 UNFOLD = {
     "SITE_TITLE": None,

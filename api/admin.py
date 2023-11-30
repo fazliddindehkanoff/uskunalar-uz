@@ -11,6 +11,7 @@ from .models import (
     Tag,
     ProductFeature,
     Banner,
+    Partner,
 )
 
 admin.site.unregister(Group)
@@ -57,3 +58,8 @@ class TagAdmin(ModelAdmin):
 @admin.register(Banner)
 class BannerAdmin(ModelAdmin):
     pass
+
+
+@admin.register(Partner)
+class PartnerAdmin(ModelAdmin):
+    list_display = ("image",)

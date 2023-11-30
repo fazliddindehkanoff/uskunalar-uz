@@ -4,7 +4,7 @@ from .base import TranslatableModel, TranslatedFields
 from config.models import BaseModel
 
 
-class Banner(BaseModel, TranslatedFields):
+class Banner(BaseModel, TranslatableModel):
     translations = TranslatedFields(
         banner_image=models.ImageField(verbose_name="banner")
     )

@@ -6,3 +6,4 @@ from .product import Product
 from .product_features import ProductFeature
 from .tag import Tag
 from .banners import Banner
+from .partners import Partner
