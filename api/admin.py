@@ -44,7 +44,14 @@ class ProductFeatureAdmin(TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(ModelAdmin):
+    def __init__(self, model, admin_site):
+        super().__init__(model, admin_site)
+        self.save_as_continue = "Tarjima qil va saqla"
+
     list_display = ("name_uz", "name_en", "name_ru")
+    autocomplete_fields = [
+        "tags",
+    ]
     inlines = [
         ProductFeatureAdmin,
     ]
@@ -52,6 +59,7 @@ class ProductAdmin(ModelAdmin):
 
 @admin.register(Tag)
 class TagAdmin(ModelAdmin):
+    search_fields = ("title",)
     list_display = ("title",)
 
 

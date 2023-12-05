@@ -156,6 +156,10 @@ UNFOLD = {
                     "title": _("Product"),
                     "link": reverse_lazy("admin:api_product_changelist"),
                 },
+                # {
+                #     "title": _("Product Feat"),
+                #     "link": reverse_lazy("admin:api_tag_changelist"),
+                # },
             ],
         },
     ],

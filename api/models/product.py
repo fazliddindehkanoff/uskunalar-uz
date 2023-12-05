@@ -11,10 +11,12 @@ class Product(BaseModel, TranslatableModel):
         name=models.CharField(max_length=250, verbose_name="Name"),
         description=MDTextField(verbose_name="description"),
     )
+    category = models.ForeignKey("Category", on_delete=models.CASCADE)
     subcategory = models.ForeignKey("SubCategory", on_delete=models.CASCADE)
     tags = models.ManyToManyField("Tag")
-    min_price = models.IntegerField()
-    max_price = models.IntegerField()
+    min_price = models.IntegerField(null=True, blank=True)
+    max_price = models.IntegerField(null=True, blank=True)
+    price = models.IntegerField(null=True, blank=True)
     availability_status = models.IntegerField(
         default=1, choices=AVAILABILITY_STATUS_CHOISES
     )
