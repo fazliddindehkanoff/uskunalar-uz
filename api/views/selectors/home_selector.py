@@ -41,6 +41,7 @@ def get_categories_list(lang_code: str) -> list:
             {
                 "title": category.get_translated_field("title", lang_code),
                 "icon": category.icon.url,
+                "products_count": category.products.all().count(),
             }
         )
     return result

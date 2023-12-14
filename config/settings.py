@@ -1,3 +1,4 @@
+from datetime import timedelta
 import os
 import environ
 
@@ -32,6 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # external apps
     "rest_framework",
+    "rest_framework_simplejwt",
     "mdeditor",
     # local apps
     "api",
@@ -54,7 +56,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -229,4 +231,19 @@ MDEDITOR_CONFIGS = {
         "lineNumbers": True,  # lineNumbers
         "language": "en",  # zh / en / es
     }
+}
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=5),
+    "ROTATE_REFRESH_TOKENS": False,
 }
