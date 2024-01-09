@@ -24,3 +24,9 @@ AVAILABILITY_STATUS_TRANSLATIONS = {
         2: "Buyurtma orqali",
     },
 }
+
+COOPERATIONAL_STATUS_CHOICES = [
+    (1, "Resume"),
+    (2, "Pause"),
+    (3, "Stop"),
+]

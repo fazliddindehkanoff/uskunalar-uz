@@ -7,7 +7,19 @@ from .constants import (
     AVAILABILITY_STATUS_TRANSLATIONS,
     CIP_STATUS_CHOISES,
     AVAILABILITY_STATUS_CHOISES,
+    COOPERATIONAL_STATUS_CHOICES,
 )
+
+
+class Supplier(TranslatableModel, BaseModel):
+    company_name = models.CharField(max_length=255)
+    experience = models.IntegerField()
+    short_details = models.CharField(max_length=700)
+    contact_email = models.EmailField()
+    contact_phone = models.CharField(max_length=255)
+    country = models.CharField(max_length=255)
+    logo = models.FileField()
+    cooperational_status = models.IntegerField(choices=COOPERATIONAL_STATUS_CHOICES)
 
 
 class Product(BaseModel, TranslatableModel):
@@ -40,6 +52,11 @@ class Product(BaseModel, TranslatableModel):
         blank=True,
         related_name="related_to",
         verbose_name="Related Products (for sets or complects)",
+    )
+    supplier = models.ForeignKey(
+        Supplier,
+        on_delete=models.SET_NULL,
+        null=True,
     )
 
     def get_availability_status_display(self, lang_code="uz"):
@@ -75,14 +92,3 @@ class ProductImage(BaseModel):
         Product, on_delete=models.CASCADE, related_name="images"
     )
     image = models.ImageField()
-
-
-class Supplier(TranslatableModel, BaseModel):
-    company_name = models.CharField(max_length=255)
-    experience = models.IntegerField()
-    short_details = models.CharField(max_length=700)
-    contact_email = models.EmailField()
-    contact_phone = models.CharField(max_length=255)
-    country = models.CharField(max_length=255)
-    logo = models.FileField()
-    cooperational_status = models.IntegerField()

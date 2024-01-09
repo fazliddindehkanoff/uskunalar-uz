@@ -16,6 +16,7 @@ from .models import (
     Banner,
     Partner,
     BackgroundBanner,
+    Supplier,
 )
 
 admin.site.unregister(Group)
@@ -30,6 +31,11 @@ class CustomUserAdmin(ModelAdmin):
 @admin.register(Blog)
 class BlogAdmin(ModelAdmin):
     list_display = ("title_uz", "title_en", "title_ru")
+
+
+@admin.register(Supplier)
+class SupplierAdmin(ModelAdmin):
+    list_display = ("company_name", "experience")
 
 
 @admin.register(Category)
