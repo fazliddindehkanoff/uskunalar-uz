@@ -8,3 +8,19 @@ AVAILABILITY_STATUS_CHOISES = [
     (1, "Omborda mavjud"),
     (2, "Buyurtma orqali"),
 ]
+
+
+AVAILABILITY_STATUS_TRANSLATIONS = {
+    "en": {
+        1: "In Stock",
+        2: "By Order",
+    },
+    "ru": {
+        1: "В наличии",
+        2: "Под заказ",
+    },
+    "uz": {
+        1: "Omborda mavjud",
+        2: "Buyurtma orqali",
+    },
+}

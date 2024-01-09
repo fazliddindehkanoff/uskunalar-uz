@@ -3,13 +3,23 @@ from mdeditor.fields import MDTextField
 
 from config.models import BaseModel
 from .base import TranslatableModel, TranslatedFields
-from .constants import CIP_STATUS_CHOISES, AVAILABILITY_STATUS_CHOISES
+from .constants import (
+    AVAILABILITY_STATUS_TRANSLATIONS,
+    CIP_STATUS_CHOISES,
+    AVAILABILITY_STATUS_CHOISES,
+)
 
 
 class Product(BaseModel, TranslatableModel):
     translations = TranslatedFields(
         name=models.CharField(max_length=250, verbose_name="Name", blank=True),
+        short_description=models.TextField(
+            default="", verbose_name="short description"
+        ),
         description=MDTextField(verbose_name="description", blank=True),
+    )
+    background_image = models.ForeignKey(
+        "BackgroundBanner", on_delete=models.SET_NULL, null=True
     )
     category = models.ForeignKey("Category", on_delete=models.CASCADE)
     subcategory = models.ForeignKey("SubCategory", on_delete=models.CASCADE)
@@ -25,6 +35,19 @@ class Product(BaseModel, TranslatableModel):
     )
     cip_type = models.IntegerField(default=1, choices=CIP_STATUS_CHOISES)
     view_count = models.IntegerField(default=0)
+    related_products = models.ManyToManyField(
+        "self",
+        blank=True,
+        related_name="related_to",
+        verbose_name="Related Products (for sets or complects)",
+    )
+
+    def get_availability_status_display(self, lang_code="uz"):
+        """Return the translated availability status."""
+        status_translation = AVAILABILITY_STATUS_TRANSLATIONS.get(
+            lang_code, AVAILABILITY_STATUS_TRANSLATIONS["uz"]
+        )
+        return status_translation.get(self.availability_status, "Unknown Status")
 
     def __str__(self) -> str:
         return self.name_uz
@@ -52,3 +75,14 @@ class ProductImage(BaseModel):
         Product, on_delete=models.CASCADE, related_name="images"
     )
     image = models.ImageField()
+
+
+class Supplier(TranslatableModel, BaseModel):
+    company_name = models.CharField(max_length=255)
+    experience = models.IntegerField()
+    short_details = models.CharField(max_length=700)
+    contact_email = models.EmailField()
+    contact_phone = models.CharField(max_length=255)
+    country = models.CharField(max_length=255)
+    logo = models.FileField()
+    cooperational_status = models.IntegerField()

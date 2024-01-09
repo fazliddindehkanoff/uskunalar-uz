@@ -1,2 +1,1 @@
-from .home import HomeAPIView
-from .products import ProductDetailAPIView
+from .products import ProductDetailAPIView, ProductListAPIView

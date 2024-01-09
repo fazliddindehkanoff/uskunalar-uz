@@ -13,3 +13,8 @@ class Banner(BaseModel, TranslatableModel):
 
 class Partner(BaseModel):
     image = models.ImageField(verbose_name="banner")
+
+
+class BackgroundBanner(BaseModel):
+    title = models.CharField(default="", blank=True)
+    image = models.ImageField(verbose_name="banner")

@@ -5,7 +5,7 @@ from django.urls import reverse
 from unfold.admin import ModelAdmin, TabularInline
 
 from api.models.product import ProductImage
-
+from api.forms import CustomUserCreationForm
 from .models import (
     Blog,
     CustomUser,
@@ -15,6 +15,7 @@ from .models import (
     ProductFeature,
     Banner,
     Partner,
+    BackgroundBanner,
 )
 
 admin.site.unregister(Group)
@@ -22,6 +23,7 @@ admin.site.unregister(Group)
 
 @admin.register(CustomUser)
 class CustomUserAdmin(ModelAdmin):
+    form = CustomUserCreationForm
     list_display = ("username", "first_name", "last_name", "is_staff", "is_active")
 
 
@@ -53,6 +55,10 @@ class ProductImageAdmin(TabularInline):
 @admin.register(Product)
 class ProductAdmin(ModelAdmin):
     change_form_template = "admin/product_change_form.html"
+    search_fields = ["pk", "name_uz", "name_en", "name_ru"]
+    autocomplete_fields = [
+        "related_products",
+    ]
 
     def changeform_view(self, request, object_id=None, form_url="", extra_context=None):
         extra_context = extra_context or {}
@@ -98,4 +104,9 @@ class BannerAdmin(ModelAdmin):
 
 @admin.register(Partner)
 class PartnerAdmin(ModelAdmin):
+    list_display = ("image",)
+
+
+@admin.register(BackgroundBanner)
+class BackgroundBannerAdmin(ModelAdmin):
     list_display = ("image",)
