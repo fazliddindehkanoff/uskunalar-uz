@@ -30,6 +30,3 @@ class TranslatableModel(models.Model):
             value = getattr(self, translated_field_name, None)
 
         return value
-
-    def __str__(self):
-        return self.title

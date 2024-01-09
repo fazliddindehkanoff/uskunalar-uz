@@ -1,5 +1,5 @@
 from django.db import models
-from mdeditor.fields import MDTextField
+from ckeditor.fields import RichTextField
 
 from config.models import BaseModel
 from .base import TranslatableModel, TranslatedFields
@@ -28,7 +28,7 @@ class Product(BaseModel, TranslatableModel):
         short_description=models.TextField(
             default="", verbose_name="short description"
         ),
-        description=MDTextField(verbose_name="description", blank=True),
+        description=RichTextField(verbose_name="description", blank=True),
     )
     background_image = models.ForeignKey(
         "BackgroundBanner", on_delete=models.SET_NULL, null=True

@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "mdeditor",
     "drf_yasg",
+    "ckeditor",
     # local apps
     "api",
 ]

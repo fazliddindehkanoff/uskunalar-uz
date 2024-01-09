@@ -1,6 +1,7 @@
 from rest_framework.exceptions import NotFound
 
 from api.models import Product
+from .supplier import get_supplier_data
 
 
 def _calc_product_cost(product: Product) -> str:
@@ -74,6 +75,7 @@ def product_detail(request, lang_code: str, product_id: int) -> dict:
             lang_code=lang_code,
             request=request,
         )
+        product_data["supplier"] = get_supplier_data(product.supplier)
 
     else:
         raise NotFound("There is no product with given id")
