@@ -1,11 +1,17 @@
 from django.contrib import admin
+from django.db import models
 from django.contrib.auth.models import Group
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+
+from unfold.contrib.forms.widgets import WysiwygWidget
 from unfold.admin import ModelAdmin, TabularInline
+from unfold.forms import UserCreationForm, UserChangeForm, AdminPasswordChangeForm
+from unfold.decorators import action, display
 
 from api.models.product import ProductImage
-from api.forms import CustomUserCreationForm
 from .models import (
     Blog,
     CustomUser,
@@ -23,9 +29,52 @@ admin.site.unregister(Group)
 
 
 @admin.register(CustomUser)
-class CustomUserAdmin(ModelAdmin):
-    form = CustomUserCreationForm
+class CustomUserAdmin(BaseUserAdmin, ModelAdmin):
+    form = UserChangeForm
+    add_form = UserCreationForm
+    change_password_form = AdminPasswordChangeForm
     list_display = ("username", "first_name", "last_name", "is_staff", "is_active")
+    fieldsets = (
+        (None, {"fields": ("username", "password")}),
+        (
+            _("Personal info"),
+            {
+                "fields": (
+                    ("first_name", "last_name"),
+                    ("category", "subcategory"),
+                    "language",
+                    "role",
+                )
+            },
+        ),
+        (_("Important dates"), {"fields": ("last_login", "date_joined")}),
+    )
+    filter_horizontal = (
+        "groups",
+        "user_permissions",
+    )
+    formfield_overrides = {
+        models.TextField: {
+            "widget": WysiwygWidget,
+        }
+    }
+    readonly_fields = ["last_login", "date_joined"]
+
+    @display(description=_("User"), header=True)
+    def display_header(self, instance: CustomUser):
+        return instance.full_name, instance.email
+
+    @display(description=_("Staff"), boolean=True)
+    def display_staff(self, instance: CustomUser):
+        return instance.is_staff
+
+    @display(description=_("Superuser"), boolean=True)
+    def display_superuser(self, instance: CustomUser):
+        return instance.is_superuser
+
+    @display(description=_("Created"))
+    def display_created(self, instance: CustomUser):
+        return instance.created_at
 
 
 @admin.register(Blog)
@@ -60,11 +109,30 @@ class ProductImageAdmin(TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(ModelAdmin):
-    change_form_template = "admin/product_change_form.html"
+    # change_form_template = "admin/product_change_form.html"
     search_fields = ["pk", "name_uz", "name_en", "name_ru"]
     autocomplete_fields = [
         "related_products",
     ]
+    exclude = ("created_by",)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.role == "EDITOR":
+            qs = qs.filter(created_by=request.user)
+        return qs
+
+    def get_form(self, request, obj=None, **kwargs):
+        excluded_fields = list(self.exclude) if self.exclude else []
+        if request.user.role == "EDITOR":
+            additional_fields_to_exclude = [
+                "category",
+                "subcategory",
+            ]
+            excluded_fields.extend(additional_fields_to_exclude)
+
+        kwargs["exclude"] = excluded_fields
+        return super().get_form(request, obj, **kwargs)
 
     def changeform_view(self, request, object_id=None, form_url="", extra_context=None):
         extra_context = extra_context or {}
@@ -78,6 +146,13 @@ class ProductAdmin(ModelAdmin):
             }
         )
         return super().render_change_form(request, context, *args, **kwargs)
+
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:
+            obj.category_id = request.user.category.id
+            obj.subcategory_id = request.user.subcategory.pk
+            obj.created_by = request.user
+        super().save_model(request, obj, form, change)
 
     def response_change(self, request, obj):
         if "_auto_translate" in request.POST:

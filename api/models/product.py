@@ -58,6 +58,9 @@ class Product(BaseModel, TranslatableModel):
         on_delete=models.SET_NULL,
         null=True,
     )
+    created_by = models.ForeignKey(
+        "CustomUser", on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     def get_availability_status_display(self, lang_code="uz"):
         """Return the translated availability status."""

@@ -54,7 +54,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "config.urls"
-
+CSRF_TRUSTED_ORIGINS = [
+    "https://fb14-86-62-0-131.ngrok-free.app",
+]
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -141,12 +143,19 @@ UNFOLD = {
                         "title": _("Dashboard"),
                         "icon": "dashboard",
                         "link": reverse_lazy("admin:index"),
-                        "permission": lambda request: request.user.is_superuser,
+                        "permission": lambda request: request.user.role == "ADMIN",
                     },
                     {
                         "title": _("Users"),
                         "icon": "people",
                         "link": reverse_lazy("admin:api_customuser_changelist"),
+                        "permission": lambda request: request.user.role == "ADMIN",
+                    },
+                    {
+                        "title": _("Products"),
+                        "icon": "box",
+                        "link": reverse_lazy("admin:api_product_changelist"),
+                        # "permission": lambda request: request.user.role == "EDITOR",
                     },
                 ],
             },

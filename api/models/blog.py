@@ -6,6 +6,6 @@ from .base import TranslatableModel, TranslatedFields
 class Blog(TranslatableModel):
     translations = TranslatedFields(
         title=models.CharField(max_length=250, verbose_name="Title"),
-        content=RichTextField(verbose_name="blog_content"),
+        content=RichTextField(verbose_name="blog Content"),
     )
     cover = models.ImageField(null=True, blank=True)

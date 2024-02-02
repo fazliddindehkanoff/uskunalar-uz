@@ -1,19 +1,24 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django import forms
+from unfold.forms import AuthenticationForm
+
 from .models import CustomUser
 
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = (
-            "username",
-            "first_name",
-            "last_name",
-            "password",
-        )
+        fields = ("username", "email")
 
-    def save(self, commit=True):
-        user: CustomUser = super().save(commit=False)
-        user.set_password(self.cleaned_data["password"])
-        user.save()
-        return user
+
+class CustomUserChangeForm(UserChangeForm):
+    class Meta:
+        model = CustomUser
+        fields = ("username", "email")
+
+
+class LoginForm(AuthenticationForm):
+    password = forms.CharField(widget=forms.PasswordInput(render_value=True))
+
+    def __init__(self, request=None, *args, **kwargs):
+        super().__init__(request, *args, **kwargs)
