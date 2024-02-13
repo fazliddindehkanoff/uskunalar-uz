@@ -15,7 +15,7 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = env("DEBUG") == "1"
 
 ALLOWED_HOSTS = ["*"]
-
+SITE_ID = 2
 INSTALLED_APPS = [
     # unfold admin stuff
     "unfold",
@@ -31,12 +31,19 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
     # external apps
     "rest_framework",
     "rest_framework_simplejwt",
     "mdeditor",
     "drf_yasg",
     "ckeditor",
+    "django_ckeditor_5",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
+    "rest_auth",
     # local apps
     "api",
 ]
@@ -51,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -161,100 +169,161 @@ UNFOLD = {
             },
         ],
     },
-    "TABS": [
-        {
-            "models": ["api.product", "api.productfeature"],
-            "items": [
-                {
-                    "title": _("Product"),
-                    "link": reverse_lazy("admin:api_product_changelist"),
-                },
-                # {
-                #     "title": _("Product Feat"),
-                #     "link": reverse_lazy("admin:api_tag_changelist"),
-                # },
-            ],
-        },
-    ],
 }
 
-
-MDEDITOR_CONFIGS = {
-    "default": {
-        "width": "100% ",  # Custom edit box width
-        "height": 700,  # Custom edit box height
-        "toolbar": [
-            "undo",
-            "redo",
-            "|",
-            "bold",
-            "del",
-            "italic",
-            "quote",
-            "ucwords",
-            "uppercase",
-            "lowercase",
-            "|",
-            "h1",
-            "h2",
-            "h3",
-            "h5",
-            "h6",
-            "|",
-            "list-ul",
-            "list-ol",
-            "hr",
-            "|",
-            "link",
-            "reference-link",
-            "image",
-            "code",
-            "preformatted-text",
-            "code-block",
-            "table",
-            "datetime",
-            "emoji",
-            "html-entities",
-            "pagebreak",
-            "goto-line",
-            "|",
-            "help",
-            "info",
-            "||",
-            "preview",
-            "watch",
-            "fullscreen",
-        ],  # custom edit box toolbar
-        # image upload format type
-        "upload_image_formats": ["jpg", "jpeg", "gif", "png", "bmp", "webp", "svg"],
-        "image_folder": "editor",  # image save the folder name
-        "theme": "default",  # edit box theme, dark / default
-        "preview_theme": "default",  # Preview area theme, dark / default
-        "editor_theme": "default",  # edit area theme, pastel-on-dark / default
-        "toolbar_autofixed": False,  # Whether the toolbar capitals
-        "search_replace": True,  # Whether to open the search for replacement
-        "emoji": True,  # whether to open the expression function
-        "tex": True,  # whether to open the tex chart function
-        "flow_chart": True,  # whether to open the flow chart function
-        "sequence": True,  # Whether to open the sequence diagram function
-        "watch": True,  # Live preview
-        "lineWrapping": True,  # lineWrapping
-        "lineNumbers": True,  # lineNumbers
-        "language": "en",  # zh / en / es
-    }
-}
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
 }
 
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": [
+            "profile",
+            "email",
+        ]
+    }
+}
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=5),
     "ROTATE_REFRESH_TOKENS": False,
+}
+
+
+CKEDITOR_5_CONFIGS = {
+    "default": {
+        "toolbar": [
+            "heading",
+            "|",
+            "bold",
+            "italic",
+            "link",
+            "bulletedList",
+            "numberedList",
+            "blockQuote",
+            "imageUpload",
+        ],
+    },
+    "extends": {
+        "blockToolbar": [
+            "paragraph",
+            "heading1",
+            "heading2",
+            "heading3",
+            "|",
+            "bulletedList",
+            "numberedList",
+            "|",
+            "blockQuote",
+        ],
+        "toolbar": [
+            "heading",
+            "|",
+            "outdent",
+            "indent",
+            "|",
+            "bold",
+            "italic",
+            "link",
+            "underline",
+            "strikethrough",
+            "code",
+            "subscript",
+            "superscript",
+            "highlight",
+            "|",
+            "codeBlock",
+            "sourceEditing",
+            "insertImage",
+            "bulletedList",
+            "numberedList",
+            "todoList",
+            "|",
+            "blockQuote",
+            "imageUpload",
+            "|",
+            "fontSize",
+            "fontFamily",
+            "fontColor",
+            "fontBackgroundColor",
+            "mediaEmbed",
+            "removeFormat",
+            "insertTable",
+        ],
+        "image": {
+            "toolbar": [
+                "imageTextAlternative",
+                "|",
+                "imageStyle:alignLeft",
+                "imageStyle:alignRight",
+                "imageStyle:alignCenter",
+                "imageStyle:side",
+                "|",
+            ],
+            "styles": [
+                "full",
+                "side",
+                "alignLeft",
+                "alignRight",
+                "alignCenter",
+            ],
+        },
+        "table": {
+            "contentToolbar": [
+                "tableColumn",
+                "tableRow",
+                "mergeTableCells",
+                "tableProperties",
+                "tableCellProperties",
+            ],
+        },
+        "heading": {
+            "options": [
+                {
+                    "model": "paragraph",
+                    "title": "Paragraph",
+                    "class": "ck-heading_paragraph",
+                },
+                {
+                    "model": "heading1",
+                    "view": "h1",
+                    "title": "Heading 1",
+                    "class": "ck-heading_heading1",
+                },
+                {
+                    "model": "heading2",
+                    "view": "h2",
+                    "title": "Heading 2",
+                    "class": "ck-heading_heading2",
+                },
+                {
+                    "model": "heading3",
+                    "view": "h3",
+                    "title": "Heading 3",
+                    "class": "ck-heading_heading3",
+                },
+            ]
+        },
+    },
+    "list": {
+        "properties": {
+            "styles": "true",
+            "startIndex": "true",
+            "reversed": "true",
+        }
+    },
 }

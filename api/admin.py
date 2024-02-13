@@ -2,16 +2,16 @@ from django.contrib import admin
 from django.db import models
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.http import HttpResponseRedirect
-from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+
+from googletrans import Translator
 
 from unfold.contrib.forms.widgets import WysiwygWidget
 from unfold.admin import ModelAdmin, TabularInline
 from unfold.forms import UserCreationForm, UserChangeForm, AdminPasswordChangeForm
-from unfold.decorators import action, display
+from unfold.decorators import display
 
-from api.models.product import ProductImage
+from .models.constants import EDITOR_LANG_CHOICES
 from .models import (
     Blog,
     CustomUser,
@@ -20,12 +20,40 @@ from .models import (
     Product,
     ProductFeature,
     Banner,
-    Partner,
+    PartnerLogos,
     BackgroundBanner,
     Supplier,
+    ProductImage,
 )
+from allauth.socialaccount.models import SocialApp, SocialAccount, SocialToken
+from django.contrib.sites.models import Site
+
 
 admin.site.unregister(Group)
+admin.site.unregister(Site)
+admin.site.unregister(SocialApp)
+admin.site.unregister(SocialAccount)
+admin.site.unregister(SocialToken)
+
+
+@admin.register(Site)
+class SiteAdmin(ModelAdmin):
+    pass
+
+
+@admin.register(SocialApp)
+class SocialAppAdmin(ModelAdmin):
+    pass
+
+
+@admin.register(SocialAccount)
+class SocialAccountAdmin(ModelAdmin):
+    pass
+
+
+@admin.register(SocialToken)
+class SocialTokenAdmin(ModelAdmin):
+    pass
 
 
 @admin.register(CustomUser)
@@ -122,56 +150,63 @@ class ProductAdmin(ModelAdmin):
             qs = qs.filter(created_by=request.user)
         return qs
 
-    def get_form(self, request, obj=None, **kwargs):
+    def get_form(self, request, obj: Product = None, **kwargs):
         excluded_fields = list(self.exclude) if self.exclude else []
+
         if request.user.role == "EDITOR":
+            excluded_languages = ["_uz", "_ru", "_en"]
             additional_fields_to_exclude = [
                 "category",
                 "subcategory",
+                "approved",
+                "view_count",
             ]
+            user_language_suffix = f"_{request.user.get_language_display()}"
+            obj = obj if obj else Product
+            for field in obj.translated_fields:
+                for lang_suffix in excluded_languages:
+                    if field.endswith(lang_suffix) and not field.endswith(
+                        user_language_suffix
+                    ):
+                        additional_fields_to_exclude.append(field)
             excluded_fields.extend(additional_fields_to_exclude)
 
         kwargs["exclude"] = excluded_fields
         return super().get_form(request, obj, **kwargs)
-
-    def changeform_view(self, request, object_id=None, form_url="", extra_context=None):
-        extra_context = extra_context or {}
-        extra_context["show_translate_button"] = True  # You can add conditions here
-        return super().changeform_view(request, object_id, form_url, extra_context)
-
-    def render_change_form(self, request, context, *args, **kwargs):
-        context.update(
-            {
-                "show_translate_button": context.get("show_translate_button", False),
-            }
-        )
-        return super().render_change_form(request, context, *args, **kwargs)
 
     def save_model(self, request, obj, form, change):
         if not obj.pk:
             obj.category_id = request.user.category.id
             obj.subcategory_id = request.user.subcategory.pk
             obj.created_by = request.user
+            obj.view_count = 0
+
+        user_language = request.user.language
+        translator = Translator()
+        for field in obj._meta.fields:
+            if field.name != "id":
+                field_name = str(field.name)
+                for lang_code, lang_name in EDITOR_LANG_CHOICES:
+                    if lang_code != user_language and field_name.endswith(lang_name):
+                        try:
+
+                            translated_value = translator.translate(
+                                getattr(
+                                    obj,
+                                    field_name[:-2]
+                                    + request.user.get_language_display(),
+                                ),
+                                src=request.user.get_language_display(),
+                                dest=lang_name,
+                            ).text
+                        except Exception as e:
+                            print(e)
+                            translated_value = "TEST"
+                        print(translated_value)
+                        setattr(obj, field.name, translated_value)
+
+        # Call the parent save_model method to save the object
         super().save_model(request, obj, form, change)
-
-    def response_change(self, request, obj):
-        if "_auto_translate" in request.POST:
-            # Perform your translation logic here
-            # Example:
-            # for field in obj.translations.fields:
-            #     translated_value = translate_field(obj, field)
-            #     setattr(obj, f"{field}_en", translated_value)
-            # obj.save()
-
-            self.message_user(
-                request, "Fields auto-filled with translations. Review before saving."
-            )
-            change_form_url = reverse(
-                "admin:%s_%s_change" % (obj._meta.app_label, obj._meta.model_name),
-                args=[obj.pk],
-            )
-            return HttpResponseRedirect(change_form_url)
-        return super().response_change(request, obj)
 
     search_fields = ("name_uz", "name_en", "name_ru")
     list_display = ("name_uz", "name_en", "name_ru")
@@ -183,8 +218,8 @@ class BannerAdmin(ModelAdmin):
     pass
 
 
-@admin.register(Partner)
-class PartnerAdmin(ModelAdmin):
+@admin.register(PartnerLogos)
+class PartnerLogoAdmin(ModelAdmin):
     list_display = ("image",)
 
 

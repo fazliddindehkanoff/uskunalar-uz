@@ -9,9 +9,9 @@ CIP_STATUS_CHOISES = [
 ]
 
 EDITOR_LANG_CHOICES = [
-    (1, "Uzb"),
-    (2, "Eng"),
-    (3, "Rus"),
+    (1, "uz"),
+    (2, "en"),
+    (3, "ru"),
 ]
 
 AVAILABILITY_STATUS_CHOISES = [

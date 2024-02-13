@@ -15,6 +15,9 @@ class TranslatedFields:
                 translated_field.verbose_name = f"{field.verbose_name} ({lang_name})"
                 cls.add_to_class(translated_field_name, translated_field)
 
+                if translated_field_name not in cls.translated_fields:
+                    cls.translated_fields.append(translated_field_name)
+
 
 class TranslatableModel(models.Model):
     class Meta:

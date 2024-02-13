@@ -11,7 +11,7 @@ class Banner(BaseModel, TranslatableModel):
     product_url = models.CharField(max_length=500)
 
 
-class Partner(BaseModel):
+class PartnerLogos(BaseModel):
     image = models.ImageField(verbose_name="banner")
 
 

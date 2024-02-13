@@ -1,5 +1,5 @@
 from django.db import models
-from ckeditor.fields import RichTextField
+from django_ckeditor_5.fields import CKEditor5Field
 
 from config.models import BaseModel
 from .base import TranslatableModel, TranslatedFields
@@ -28,7 +28,11 @@ class Product(BaseModel, TranslatableModel):
         short_description=models.TextField(
             default="", verbose_name="short description"
         ),
-        description=RichTextField(verbose_name="description", blank=True),
+        description=CKEditor5Field(
+            config_name="extends",
+            blank=True,
+            null=True,
+        ),
     )
     background_image = models.ForeignKey(
         "BackgroundBanner", on_delete=models.SET_NULL, null=True
@@ -45,6 +49,7 @@ class Product(BaseModel, TranslatableModel):
     discount = models.DecimalField(
         max_digits=9, decimal_places=0, null=True, blank=True
     )
+    approved = models.BooleanField(default=False)
     cip_type = models.IntegerField(default=1, choices=CIP_STATUS_CHOISES)
     view_count = models.IntegerField(default=0)
     related_products = models.ManyToManyField(
@@ -61,6 +66,13 @@ class Product(BaseModel, TranslatableModel):
     created_by = models.ForeignKey(
         "CustomUser", on_delete=models.SET_NULL, null=True, blank=True
     )
+
+    @classmethod
+    def get_model_fields(cls):
+        """
+        Return a list of all fields of the Product model.
+        """
+        return [field.name for field in cls._meta.fields]
 
     def get_availability_status_display(self, lang_code="uz"):
         """Return the translated availability status."""
