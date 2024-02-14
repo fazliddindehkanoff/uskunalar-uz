@@ -8,6 +8,12 @@ CIP_STATUS_CHOISES = [
     (3, "FCA"),
 ]
 
+ORDER_STATUS_CHOISES = [
+    (1, "Not started"),
+    (2, "Pending"),
+    (3, "Finished"),
+]
+
 EDITOR_LANG_CHOICES = [
     (1, "uz"),
     (2, "en"),

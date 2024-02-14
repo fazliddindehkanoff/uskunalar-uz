@@ -203,6 +203,14 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": False,
 }
 
+customColorPalette = [
+    {"color": "hsl(4, 90%, 58%)", "label": "Red"},
+    {"color": "hsl(340, 82%, 52%)", "label": "Pink"},
+    {"color": "hsl(291, 64%, 42%)", "label": "Purple"},
+    {"color": "hsl(262, 52%, 47%)", "label": "Deep Purple"},
+    {"color": "hsl(231, 48%, 48%)", "label": "Indigo"},
+    {"color": "hsl(207, 90%, 54%)", "label": "Blue"},
+]
 
 CKEDITOR_5_CONFIGS = {
     "default": {
@@ -218,7 +226,21 @@ CKEDITOR_5_CONFIGS = {
             "imageUpload",
         ],
     },
+    "comment": {
+        "language": {"ui": "en", "content": "en"},
+        "toolbar": [
+            "heading",
+            "|",
+            "bold",
+            "italic",
+            "link",
+            "bulletedList",
+            "numberedList",
+            "blockQuote",
+        ],
+    },
     "extends": {
+        "language": "en",
         "blockToolbar": [
             "paragraph",
             "heading1",
@@ -232,6 +254,7 @@ CKEDITOR_5_CONFIGS = {
         ],
         "toolbar": [
             "heading",
+            "codeBlock",
             "|",
             "outdent",
             "indent",
@@ -246,15 +269,12 @@ CKEDITOR_5_CONFIGS = {
             "superscript",
             "highlight",
             "|",
-            "codeBlock",
-            "sourceEditing",
-            "insertImage",
             "bulletedList",
             "numberedList",
             "todoList",
             "|",
             "blockQuote",
-            "imageUpload",
+            "insertImage",
             "|",
             "fontSize",
             "fontFamily",
@@ -263,6 +283,7 @@ CKEDITOR_5_CONFIGS = {
             "mediaEmbed",
             "removeFormat",
             "insertTable",
+            "sourceEditing",
         ],
         "image": {
             "toolbar": [
@@ -272,6 +293,8 @@ CKEDITOR_5_CONFIGS = {
                 "imageStyle:alignRight",
                 "imageStyle:alignCenter",
                 "imageStyle:side",
+                "|",
+                "toggleImageCaption",
                 "|",
             ],
             "styles": [
@@ -290,6 +313,14 @@ CKEDITOR_5_CONFIGS = {
                 "tableProperties",
                 "tableCellProperties",
             ],
+            "tableProperties": {
+                "borderColors": customColorPalette,
+                "backgroundColors": customColorPalette,
+            },
+            "tableCellProperties": {
+                "borderColors": customColorPalette,
+                "backgroundColors": customColorPalette,
+            },
         },
         "heading": {
             "options": [
@@ -318,12 +349,17 @@ CKEDITOR_5_CONFIGS = {
                 },
             ]
         },
-    },
-    "list": {
-        "properties": {
-            "styles": "true",
-            "startIndex": "true",
-            "reversed": "true",
-        }
+        "list": {
+            "properties": {
+                "styles": True,
+                "startIndex": True,
+                "reversed": True,
+            }
+        },
+        "htmlSupport": {
+            "allow": [
+                {"name": "/.*/", "attributes": True, "classes": True, "styles": True}
+            ]
+        },
     },
 }

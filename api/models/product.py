@@ -1,5 +1,6 @@
 from django.db import models
 from django_ckeditor_5.fields import CKEditor5Field
+from api.models.users import CustomUser
 
 from config.models import BaseModel
 from .base import TranslatableModel, TranslatedFields
@@ -8,6 +9,7 @@ from .constants import (
     CIP_STATUS_CHOISES,
     AVAILABILITY_STATUS_CHOISES,
     COOPERATIONAL_STATUS_CHOICES,
+    ORDER_STATUS_CHOISES,
 )
 
 
@@ -29,6 +31,7 @@ class Product(BaseModel, TranslatableModel):
             default="", verbose_name="short description"
         ),
         description=CKEditor5Field(
+            "Description",
             config_name="extends",
             blank=True,
             null=True,
@@ -107,3 +110,15 @@ class ProductImage(BaseModel):
         Product, on_delete=models.CASCADE, related_name="images"
     )
     image = models.ImageField()
+
+
+class Order(BaseModel):
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="orders"
+    )
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="user_orders"
+    )
+    description = models.TextField(null=True)
+    notes = models.TextField(null=True)
+    status = models.IntegerField(choices=ORDER_STATUS_CHOISES, default=1)

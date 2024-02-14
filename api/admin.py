@@ -24,6 +24,7 @@ from .models import (
     BackgroundBanner,
     Supplier,
     ProductImage,
+    Order,
 )
 from allauth.socialaccount.models import SocialApp, SocialAccount, SocialToken
 from django.contrib.sites.models import Site
@@ -39,6 +40,11 @@ admin.site.unregister(SocialToken)
 @admin.register(Site)
 class SiteAdmin(ModelAdmin):
     pass
+
+
+@admin.register(Order)
+class OrderAdmin(ModelAdmin):
+    list_display = ["user", "product", "status"]
 
 
 @admin.register(SocialApp)
@@ -175,11 +181,11 @@ class ProductAdmin(ModelAdmin):
         return super().get_form(request, obj, **kwargs)
 
     def save_model(self, request, obj, form, change):
-        if not obj.pk:
+        obj.created_by = request.user
+
+        if not obj.pk and request.user.role == "EDITOR":
             obj.category_id = request.user.category.id
             obj.subcategory_id = request.user.subcategory.pk
-            obj.created_by = request.user
-            obj.view_count = 0
 
         user_language = request.user.language
         translator = Translator()
