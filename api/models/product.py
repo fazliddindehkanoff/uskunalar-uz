@@ -40,8 +40,12 @@ class Product(BaseModel, TranslatableModel):
     background_image = models.ForeignKey(
         "BackgroundBanner", on_delete=models.SET_NULL, null=True
     )
-    category = models.ForeignKey("Category", on_delete=models.CASCADE)
-    subcategory = models.ForeignKey("SubCategory", on_delete=models.CASCADE)
+    category = models.ForeignKey(
+        "Category", on_delete=models.CASCADE, related_name="category_products_set"
+    )
+    subcategory = models.ForeignKey(
+        "SubCategory", on_delete=models.CASCADE, related_name="subcategory_products_set"
+    )
     tags = models.CharField(max_length=500, default="", blank=True)
     min_price = models.IntegerField(null=True, blank=True)
     max_price = models.IntegerField(null=True, blank=True)
