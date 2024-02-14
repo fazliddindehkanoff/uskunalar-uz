@@ -1,2 +1,2 @@
 from .products import ProductDetailAPIView, ProductListAPIView
-from .blogs import BlogListAPIView
+from .blogs import BlogListAPIView, BlogDetailAPIView

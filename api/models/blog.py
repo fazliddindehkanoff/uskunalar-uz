@@ -10,3 +10,4 @@ class Blog(TranslatableModel, BaseModel):
         content=CKEditor5Field("Text", config_name="extends"),
     )
     cover = models.ImageField(null=True, blank=True)
+    view_count = models.IntegerField(default=0)

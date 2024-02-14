@@ -1,26 +1,6 @@
+from rest_framework.exceptions import NotFound
+
 from api.models import Blog
-
-
-def get_blog_posts_list(request, lang_code: str) -> list:
-    blog_posts = []
-    for blog_post in Blog.objects.all():
-        blog_posts.append(
-            get_blog_detail(request=request, blog_post=blog_post, lang_code=lang_code)
-        )
-
-    return blog_posts
-
-
-def get_blog_detail(request, blog_post: Blog, lang_code: str) -> dict:
-    return {
-        "title": blog_post.get_translated_field(
-            field_name="title", lang_code=lang_code
-        ),
-        "content": blog_post.get_translated_field(
-            field_name="content", lang_code=lang_code
-        ),
-        "cover_image": request.build_absolute_uri(blog_post.cover.url),
-    }
 
 
 def list_blog_posts(
@@ -73,3 +53,19 @@ def get_blog_posts_list(queryset, lang_code, request):
         blog_posts_data.append(post_data)
 
     return blog_posts_data
+
+
+def blog_post_detail(lang_code: str, blog_post_id: int) -> dict:
+    blog_post = Blog.objects.filter(pk=blog_post_id).first()
+
+    if blog_post:
+        blog_post.view_count += 1
+        blog_post.save()
+        return {
+            "cover": blog_post.cover.url if blog_post.cover else "",
+            "title": blog_post.get_translated_field("title", lang_code),
+            "content": blog_post.get_translated_field("content", lang_code),
+        }
+
+    else:
+        raise NotFound("There is no product with given id")

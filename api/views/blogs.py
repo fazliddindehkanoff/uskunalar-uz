@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .selectors import get_blog_posts_list, get_blog_detail, list_blog_posts
+from .selectors import list_blog_posts, blog_post_detail
 
 
 class BlogListAPIView(APIView):
@@ -21,3 +21,17 @@ class BlogListAPIView(APIView):
             search_query=search_query,
         )
         return Response(data)
+
+
+class BlogDetailAPIView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, pk):
+        lang_code = request.META.get("HTTP_ACCEPT_LANGUAGE")
+        return Response(
+            blog_post_detail(
+                lang_code=lang_code,
+                blog_post_id=pk,
+            )
+        )
