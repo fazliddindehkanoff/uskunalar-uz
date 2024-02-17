@@ -12,9 +12,10 @@ class CustomUser(AbstractUser, LifecycleModel):
     class UserRole(models.TextChoices):
         ADMIN = "ADMIN", _("Admin")
         EDITOR = "EDITOR", _("Editor")
+        USER = "USER", _("Foydalanuvchi")
 
     role = models.CharField(
-        max_length=10, choices=UserRole.choices, default=UserRole.EDITOR
+        max_length=10, choices=UserRole.choices, default=UserRole.USER
     )
     category = models.ForeignKey(
         "Category", on_delete=models.SET_NULL, null=True, blank=True
@@ -30,18 +31,15 @@ class CustomUser(AbstractUser, LifecycleModel):
             self.subcategory = None
         super().save(*args, **kwargs)
 
-    @hook("before_create")
-    def set_initial_values(self):
-        self.is_staff = True
-        self.is_active = True
-
     @hook("after_create")
     def set_user_permissions(self):
-        if self.role == self.UserRole.ADMIN:
-            # Give all permissions for admin panel
+        if self.role != self.UserRole.USER:
+            self.is_staff = True
+            self.is_active = True
+
+        elif self.role == self.UserRole.ADMIN:
             self.user_permissions.set(Permission.objects.all())
         elif self.role == self.UserRole.EDITOR:
-            # Give permissions for the Product model
             product_permissions = Permission.objects.filter(
                 content_type__app_label="api", content_type__model="product"
             )
@@ -74,3 +72,10 @@ class JWTToken(BaseModel):
 
     def is_expired(self):
         return timezone.now() > self.expiration_date
+
+
+class SMSCode(BaseModel):
+    code = models.IntegerField()
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="sms_codes"
+    )

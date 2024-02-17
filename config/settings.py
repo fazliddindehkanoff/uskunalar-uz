@@ -39,11 +39,6 @@ INSTALLED_APPS = [
     "drf_yasg",
     "ckeditor",
     "django_ckeditor_5",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
-    "rest_auth",
     # local apps
     "api",
 ]
@@ -58,12 +53,11 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
 CSRF_TRUSTED_ORIGINS = [
-    "https://fb14-86-62-0-131.ngrok-free.app",
+    "https://bd4f-84-54-80-12.ngrok-free.app",
 ]
 TEMPLATES = [
     {
@@ -181,20 +175,6 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
-}
-
-AUTHENTICATION_BACKENDS = (
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
-)
-
-SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "SCOPE": [
-            "profile",
-            "email",
-        ]
-    }
 }
 
 SIMPLE_JWT = {

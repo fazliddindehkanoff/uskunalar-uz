@@ -7,6 +7,8 @@ from api.views import (
     BlogDetailAPIView,
     PartnersLogoListAPIView,
     CategoryListApiView,
+    UserVerificationView,
+    UserRegistrationView,
 )
 
 urlpatterns = [
@@ -16,4 +18,6 @@ urlpatterns = [
     path("products/", ProductListAPIView.as_view()),
     path("categories/", CategoryListApiView.as_view()),
     path("blog-posts/", BlogListAPIView.as_view()),
+    path("auth/register/", UserRegistrationView.as_view()),
+    path("auth/phone-verification/", UserVerificationView.as_view()),
 ]

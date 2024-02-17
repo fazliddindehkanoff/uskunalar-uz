@@ -26,40 +26,13 @@ from .models import (
     ProductImage,
     Order,
 )
-from allauth.socialaccount.models import SocialApp, SocialAccount, SocialToken
-from django.contrib.sites.models import Site
-
 
 admin.site.unregister(Group)
-admin.site.unregister(Site)
-admin.site.unregister(SocialApp)
-admin.site.unregister(SocialAccount)
-admin.site.unregister(SocialToken)
-
-
-@admin.register(Site)
-class SiteAdmin(ModelAdmin):
-    pass
 
 
 @admin.register(Order)
 class OrderAdmin(ModelAdmin):
     list_display = ["user", "product", "status"]
-
-
-@admin.register(SocialApp)
-class SocialAppAdmin(ModelAdmin):
-    pass
-
-
-@admin.register(SocialAccount)
-class SocialAccountAdmin(ModelAdmin):
-    pass
-
-
-@admin.register(SocialToken)
-class SocialTokenAdmin(ModelAdmin):
-    pass
 
 
 @admin.register(CustomUser)
