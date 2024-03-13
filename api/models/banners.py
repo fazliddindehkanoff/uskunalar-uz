@@ -16,5 +16,5 @@ class PartnerLogos(BaseModel):
 
 
 class BackgroundBanner(BaseModel):
-    title = models.CharField(default="", blank=True)
+    title = models.CharField(default="", blank=True, max_length=255)
     image = models.ImageField(verbose_name="banner")

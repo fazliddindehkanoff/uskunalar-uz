@@ -9,6 +9,7 @@ from api.views import (
     CategoryListApiView,
     UserVerificationView,
     UserRegistrationView,
+    GoogleLoginAPIView,
 )
 
 urlpatterns = [
@@ -20,4 +21,5 @@ urlpatterns = [
     path("blog-posts/", BlogListAPIView.as_view()),
     path("auth/register/", UserRegistrationView.as_view()),
     path("auth/phone-verification/", UserVerificationView.as_view()),
+    path("auth/google/", GoogleLoginAPIView.as_view(), name="google_login"),
 ]
