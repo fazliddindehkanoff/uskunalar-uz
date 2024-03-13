@@ -15,7 +15,6 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = env("DEBUG") == "1"
 
 ALLOWED_HOSTS = ["*"]
-SITE_ID = 2
 INSTALLED_APPS = [
     # unfold admin stuff
     "unfold",
