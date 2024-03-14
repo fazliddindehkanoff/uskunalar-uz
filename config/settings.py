@@ -57,7 +57,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "config.urls"
 CSRF_TRUSTED_ORIGINS = [
-    "https://bd4f-84-54-80-12.ngrok-free.app",
+    "https://uskunalar.uz.fazliddindehkanoff.uz",
 ]
 TEMPLATES = [
     {
