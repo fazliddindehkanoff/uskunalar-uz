@@ -29,15 +29,13 @@ class CustomUser(AbstractUser, LifecycleModel):
         if self.role == self.UserRole.ADMIN:
             self.category = None
             self.subcategory = None
+            self.is_staff = True
+            self.is_active = True
         super().save(*args, **kwargs)
 
     @hook("after_create")
     def set_user_permissions(self):
-        if self.role != self.UserRole.USER:
-            self.is_staff = True
-            self.is_active = True
-
-        elif self.role == self.UserRole.ADMIN:
+        if self.role == self.UserRole.ADMIN:
             self.user_permissions.set(Permission.objects.all())
         elif self.role == self.UserRole.EDITOR:
             product_permissions = Permission.objects.filter(
@@ -49,15 +47,11 @@ class CustomUser(AbstractUser, LifecycleModel):
             product_feature_permissions = Permission.objects.filter(
                 content_type__app_label="api", content_type__model="product_feature"
             )
-
-            # Combine the sets of permissions
             all_permissions = (
                 product_permissions
                 | product_image_permissions
                 | product_feature_permissions
             )
-
-            # Set all combined permissions
             self.user_permissions.set(all_permissions)
 
 
