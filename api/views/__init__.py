@@ -1,6 +1,7 @@
-from .products import ProductDetailAPIView, ProductListAPIView
-from .blogs import BlogListAPIView, BlogDetailAPIView
-from .partners import PartnersLogoListAPIView
-from .categories import CategoryListApiView
 from .authentication import UserRegistrationView, UserVerificationView
+from .banners import BannerListApiView
+from .blogs import BlogListAPIView, BlogDetailAPIView
+from .categories import CategoryListApiView
 from .google_auth import GoogleLoginAPIView
+from .products import ProductDetailAPIView, ProductListAPIView
+from .partners import PartnersLogoListAPIView
