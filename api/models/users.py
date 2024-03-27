@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Permission
+from django.contrib.auth.models import AbstractUser, Permission, Group
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django_lifecycle import LifecycleModel, hook
@@ -31,32 +31,25 @@ class CustomUser(AbstractUser, LifecycleModel):
             self.subcategory = None
         super().save(*args, **kwargs)
 
-    @hook("after_create")
+    @hook("after_update")
     def set_user_permissions(self):
         self.is_staff = True
         self.is_active = True
         if self.role == self.UserRole.ADMIN:
             self.user_permissions.set(Permission.objects.all())
         elif self.role == self.UserRole.EDITOR:
-            product_permissions = Permission.objects.filter(
-                content_type__app_label="api", content_type__model="product"
-            )
-            product_image_permissions = Permission.objects.filter(
-                content_type__app_label="api", content_type__model="product_image"
-            )
-            product_feature_permissions = Permission.objects.filter(
-                content_type__app_label="api", content_type__model="product_feature"
-            )
-            all_permissions = list(
-                product_permissions
-                | product_image_permissions
-                | product_feature_permissions
-            )
-            self.user_permissions.set(all_permissions)
+            group = Group.objects.get(pk=1)  # Assuming group ID 1 exists
+            self.groups.set([group])
+            print("User permissions set successfully.")
+            print("User groups after assignment:", self.groups.all())
 
 
 class JWTToken(BaseModel):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="token")
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="token",
+    )
     access_token = models.TextField()
     is_active = models.BooleanField()
     expiration_date = models.DateTimeField()

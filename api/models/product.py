@@ -1,7 +1,7 @@
 from django.db import models
-from django_ckeditor_5.fields import CKEditor5Field
-from api.models.users import CustomUser
+from mdeditor.fields import MDTextField
 
+from api.models.users import CustomUser
 from config.models import BaseModel
 from .base import TranslatableModel, TranslatedFields
 from .constants import (
@@ -30,21 +30,26 @@ class Product(BaseModel, TranslatableModel):
         short_description=models.TextField(
             default="", verbose_name="short description"
         ),
-        description=CKEditor5Field(
-            "Description",
-            config_name="extends",
+        description=MDTextField(
+            verbose_name="Description",
             blank=True,
             null=True,
         ),
     )
     background_image = models.ForeignKey(
-        "BackgroundBanner", on_delete=models.SET_NULL, null=True
+        "BackgroundBanner",
+        on_delete=models.SET_NULL,
+        null=True,
     )
     category = models.ForeignKey(
-        "Category", on_delete=models.CASCADE, related_name="category_products_set"
+        "Category",
+        on_delete=models.CASCADE,
+        related_name="category_products_set",
     )
     subcategory = models.ForeignKey(
-        "SubCategory", on_delete=models.CASCADE, related_name="subcategory_products_set"
+        "SubCategory",
+        on_delete=models.CASCADE,
+        related_name="subcategory_products_set",
     )
     tags = models.CharField(max_length=500, default="", blank=True)
     min_price = models.IntegerField(null=True, blank=True)
@@ -62,7 +67,6 @@ class Product(BaseModel, TranslatableModel):
     related_products = models.ManyToManyField(
         "self",
         blank=True,
-        related_name="related_to",
         verbose_name="Related Products (for sets or complects)",
     )
     supplier = models.ForeignKey(
@@ -86,7 +90,10 @@ class Product(BaseModel, TranslatableModel):
         status_translation = AVAILABILITY_STATUS_TRANSLATIONS.get(
             lang_code, AVAILABILITY_STATUS_TRANSLATIONS["uz"]
         )
-        return status_translation.get(self.availability_status, "Unknown Status")
+        return status_translation.get(
+            self.availability_status,
+            "Unknown Status",
+        )
 
     def __str__(self) -> str:
         return self.name_uz

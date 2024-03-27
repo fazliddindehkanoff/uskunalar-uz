@@ -1,11 +1,14 @@
+from typing import Any
 from django.contrib import admin
 from django.db import models
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.forms import Form
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
 from googletrans import Translator
-
+from adminsortable2.admin import SortableAdminMixin
 from unfold.contrib.forms.widgets import WysiwygWidget
 from unfold.admin import ModelAdmin, TabularInline
 from unfold.forms import UserCreationForm, UserChangeForm, AdminPasswordChangeForm
@@ -25,9 +28,33 @@ from .models import (
     Supplier,
     ProductImage,
     Order,
+    Work,
+    Line,
+    LineCategory,
+    Video,
 )
 
-admin.site.unregister(Group)
+# admin.site.unregister(Group)
+
+
+@admin.register(Work)
+class WorkAdmin(ModelAdmin):
+    pass
+
+
+@admin.register(Line)
+class LineAdmin(ModelAdmin):
+    pass
+
+
+@admin.register(LineCategory)
+class LineCategoryAdmin(ModelAdmin):
+    pass
+
+
+@admin.register(Video)
+class VideoAdmin(ModelAdmin):
+    pass
 
 
 @admin.register(Order)
@@ -40,7 +67,13 @@ class CustomUserAdmin(BaseUserAdmin, ModelAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
     change_password_form = AdminPasswordChangeForm
-    list_display = ("username", "first_name", "last_name", "is_staff", "is_active")
+    list_display = (
+        "username",
+        "first_name",
+        "last_name",
+        "is_staff",
+        "is_active",
+    )
     fieldsets = (
         (None, {"fields": ("username", "password")}),
         (
@@ -104,9 +137,20 @@ class SubCategoryAdmin(ModelAdmin):
     list_display = ("title_uz", "title_en", "title_ru")
 
 
-class ProductFeatureAdmin(TabularInline):
+class ProductFeatureInlineAdmin(TabularInline):
     model = ProductFeature
     extra = 1
+
+    def get_formset(self, request, obj=None, **kwargs):
+        formset_class = super().get_formset(request, obj, **kwargs)
+        if request.user.role == "EDITOR":
+            user_language_suffix = f"_{request.user.get_language_display()}"
+            formset_class.form.base_fields = {
+                field: formset_class.form.base_fields[field]
+                for field in formset_class.form.base_fields
+                if field.endswith(user_language_suffix)
+            }
+        return formset_class
 
 
 class ProductImageAdmin(TabularInline):
@@ -115,7 +159,7 @@ class ProductImageAdmin(TabularInline):
 
 
 @admin.register(Product)
-class ProductAdmin(ModelAdmin):
+class ProductAdmin(ModelAdmin, SortableAdminMixin):
     # change_form_template = "admin/product_change_form.html"
     search_fields = ["pk", "name_uz", "name_en", "name_ru"]
     autocomplete_fields = [
@@ -160,36 +204,38 @@ class ProductAdmin(ModelAdmin):
             obj.category_id = request.user.category.id
             obj.subcategory_id = request.user.subcategory.pk
 
-        user_language = request.user.language
-        translator = Translator()
-        for field in obj._meta.fields:
-            if field.name != "id":
-                field_name = str(field.name)
-                for lang_code, lang_name in EDITOR_LANG_CHOICES:
-                    if lang_code != user_language and field_name.endswith(lang_name):
-                        try:
-
-                            translated_value = translator.translate(
-                                getattr(
-                                    obj,
-                                    field_name[:-2]
-                                    + request.user.get_language_display(),
-                                ),
-                                src=request.user.get_language_display(),
-                                dest=lang_name,
-                            ).text
-                        except Exception as e:
-                            print(e)
-                            translated_value = "TEST"
-                        print(translated_value)
-                        setattr(obj, field.name, translated_value)
+        if request.user.role == "EDITOR":
+            user_language = request.user.language
+            translator = Translator()
+            for field in obj._meta.fields:
+                if field.name != "id":
+                    field_name = str(field.name)
+                    for lang_code, lang_name in EDITOR_LANG_CHOICES:
+                        condition = lang_code != user_language and field_name.endswith(
+                            lang_name
+                        )
+                        if condition:
+                            try:
+                                translated_value = translator.translate(
+                                    getattr(
+                                        obj,
+                                        field_name[:-2]
+                                        + request.user.get_language_display(),
+                                    ),
+                                    src=request.user.get_language_display(),
+                                    dest=lang_name,
+                                ).text
+                            except Exception as e:
+                                print(lang_name, f"error with translation\n{e}")
+                                translated_value = "Error occured with translation"
+                            setattr(obj, field.name, translated_value)
 
         # Call the parent save_model method to save the object
         super().save_model(request, obj, form, change)
 
     search_fields = ("name_uz", "name_en", "name_ru")
     list_display = ("name_uz", "name_en", "name_ru")
-    inlines = [ProductFeatureAdmin, ProductImageAdmin]
+    inlines = [ProductFeatureInlineAdmin, ProductImageAdmin]
 
 
 @admin.register(Banner)

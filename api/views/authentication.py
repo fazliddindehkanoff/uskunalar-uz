@@ -1,13 +1,21 @@
+import os
+import environ
+
+from pathlib import Path
+from django.contrib.auth import get_user_model
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import update_last_login
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 from api.models import SMSCode
 from api.utils import generate_code, send_sms
 
 User = get_user_model()
+env = environ.Env()
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 
 class UserRegistrationSerializer(serializers.Serializer):
@@ -33,9 +41,15 @@ class UserRegistrationView(APIView):
             code = generate_code()
             SMSCode.objects.create(code=code, user=user)
             send_sms(code, phone_number)
-            return Response({"user_id": user.id}, status=status.HTTP_201_CREATED)
+            return Response(
+                {"user_id": user.id},
+                status=status.HTTP_201_CREATED,
+            )
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class UserVerificationView(APIView):
@@ -63,3 +77,21 @@ class UserVerificationView(APIView):
             {"message": "User activated successfully.", "user_id": user.pk},
             status=status.HTTP_200_OK,
         )
+
+
+class GoogleLoginAPIView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        token = request.data.get("id_token")
+        idinfo = id_token.verify_oauth2_token(
+            token,
+            requests.Request(),
+            env("GOOGLE_OAUTH_KEY"),
+        )
+        # TODO: Create or Update user using full name and email
+        full_name = idinfo.get("name")
+        email = idinfo.get("email")
+
+        return Response({"ok": True})

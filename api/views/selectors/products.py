@@ -66,7 +66,9 @@ def product_detail(request, lang_code: str, product_id: int) -> dict:
         product_data["cip_type"] = product.get_cip_type_display()
         product_data["view_count"] = product.view_count
         product_data["related_products"] = get_products_list(
-            product.related_products.all(), lang_code=lang_code, request=request
+            product.related_products.all(),
+            lang_code=lang_code,
+            request=request,
         )
         product_data["similar_products"] = get_products_list(
             Product.objects.filter(

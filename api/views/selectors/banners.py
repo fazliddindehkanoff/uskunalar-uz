@@ -10,7 +10,10 @@ def list_banners(request) -> list:
             {
                 "product_url": banner.product_url,
                 "image_url": request.build_absolute_uri(
-                    banner.get_translated_field("banner_image", lang_code=lang_code).url
+                    banner.get_translated_field(
+                        "banner_image",
+                        lang_code=lang_code,
+                    ).url
                 ),
             }
         )

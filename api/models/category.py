@@ -30,3 +30,13 @@ class SubCategory(TranslatableModel, BaseModel):
     class Meta:
         verbose_name = "SubCategory"
         verbose_name_plural = "SubCategories"
+
+
+class LineCategory(TranslatableModel, BaseModel):
+    translations = TranslatedFields(
+        title=models.CharField(max_length=250, verbose_name="Title")
+    )
+
+    class Meta:
+        verbose_name = "LineCategory"
+        verbose_name_plural = "LineCategories"

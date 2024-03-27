@@ -4,23 +4,30 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('api', '0002_alter_customuser_options_alter_customuser_managers_and_more'),
+        ("api", "0002_alter_customuser_options_alter_customuser_managers_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Blog',
+            name="Blog",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(blank=True, null=True, upload_to='')),
-                ('title_en', models.CharField(max_length=250, verbose_name='Title')),
-                ('title_uz', models.CharField(max_length=250, verbose_name='Title')),
-                ('title_ru', models.CharField(max_length=250, verbose_name='Title')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("image", models.ImageField(blank=True, null=True, upload_to="")),
+                ("title_en", models.CharField(max_length=250, verbose_name="Title")),
+                ("title_uz", models.CharField(max_length=250, verbose_name="Title")),
+                ("title_ru", models.CharField(max_length=250, verbose_name="Title")),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]
