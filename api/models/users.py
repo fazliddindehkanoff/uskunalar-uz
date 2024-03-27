@@ -29,12 +29,13 @@ class CustomUser(AbstractUser, LifecycleModel):
         if self.role == self.UserRole.ADMIN:
             self.category = None
             self.subcategory = None
+        elif self.role == (self.UserRole.EDITOR or self.UserRole.ADMIN):
+            self.is_staff = True
+            self.is_active = True
         super().save(*args, **kwargs)
 
     @hook("after_update")
     def set_user_permissions(self):
-        self.is_staff = True
-        self.is_active = True
         if self.role == self.UserRole.ADMIN:
             self.user_permissions.set(Permission.objects.all())
         elif self.role == self.UserRole.EDITOR:
