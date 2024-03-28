@@ -1,4 +1,5 @@
 from rest_framework.exceptions import NotFound
+from random import sample
 
 from api.models import Product
 from .supplier import get_supplier_data
@@ -87,6 +88,7 @@ def product_detail(request, lang_code: str, product_id: int) -> dict:
 def list_products(
     request,
     lang_code: str,
+    random: bool = False,
     category_id: int = 0,
     sub_category_id: int = 0,
     search_query: str = "",
@@ -95,7 +97,7 @@ def list_products(
     page_size: int = 10,
 ) -> dict:
     queryset = Product.objects.all()
-    # Searching
+
     if search_query:
         queryset = queryset.filter(name__icontains=search_query)
 
@@ -105,17 +107,18 @@ def list_products(
     if sub_category_id != 0:
         queryset = queryset.filter(subcategory_id=sub_category_id)
 
-    # Ordering
+    total_count = queryset.count()
+
+    if random:
+        queryset = sample(list(queryset), len(queryset))
+
     if order_by:
         queryset = queryset.order_by(order_by)
 
-    # Pagination
     start = (page - 1) * page_size
     end = start + page_size
-    total_count = queryset.count()
     queryset = queryset[start:end]
 
-    # Formatting the result
     products_data = get_products_list(
         queryset=queryset, lang_code=lang_code, request=request
     )

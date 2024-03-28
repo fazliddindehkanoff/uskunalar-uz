@@ -69,6 +69,7 @@ class ProductListAPIView(APIView):
     def get(self, request):
         category_id = int(request.query_params.get("category_id", 0))
         sub_category_id = int(request.query_params.get("subcategory_id", 0))
+        random = bool(request.query_params.get("random", False))
         order_by = request.query_params.get("order_by")
         query = request.query_params.get("search")
         page = int(request.query_params.get("page", 1))
@@ -79,6 +80,7 @@ class ProductListAPIView(APIView):
             list_products(
                 request=request,
                 lang_code=lang_code,
+                random=random,
                 category_id=category_id,
                 sub_category_id=sub_category_id,
                 order_by=order_by,
