@@ -70,6 +70,9 @@ CORS_ALLOWED_ORIGINS = [
     "https://lms.rahimovschool.uz",
 ]
 
+CORS_ALLOW_HEADERS = [
+    "Accept-Language",
+]
 
 TEMPLATES = [
     {
