@@ -64,6 +64,7 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://localhost:3000",
     "https://management.rahimovschool.uz",
     "https://lms.rahimovschool.uz",
 ]
