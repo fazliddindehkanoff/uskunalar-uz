@@ -58,9 +58,7 @@ class Product(BaseModel, TranslatableModel):
     availability_status = models.IntegerField(
         default=1, choices=AVAILABILITY_STATUS_CHOISES
     )
-    discount = models.DecimalField(
-        max_digits=9, decimal_places=0, null=True, blank=True
-    )
+    discount = models.IntegerField(default=0)
     approved = models.BooleanField(default=False)
     cip_type = models.IntegerField(default=1, choices=CIP_STATUS_CHOISES)
     view_count = models.IntegerField(default=0)

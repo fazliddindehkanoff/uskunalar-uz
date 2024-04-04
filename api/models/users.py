@@ -67,3 +67,16 @@ class SMSCode(BaseModel):
     user = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name="sms_codes"
     )
+
+
+class OTP(BaseModel):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    code = models.CharField(max_length=200)
+    is_active = models.BooleanField(default=True)
+
+    @property
+    def is_expired(self):
+        expiration_time = self.created_at + timezone.timedelta(minutes=5)
+        current_time = timezone.now()
+
+        return current_time >= expiration_time

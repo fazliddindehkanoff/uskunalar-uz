@@ -13,7 +13,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 SECRET_KEY = env("SECRET_KEY")
 DEBUG = env("DEBUG") == "1"
-SITE_ID = 1
+SITE_ID = 2
 ALLOWED_HOSTS = ["*"]
 INSTALLED_APPS = [
     # unfold admin stuff

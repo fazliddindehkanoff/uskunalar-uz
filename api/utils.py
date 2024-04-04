@@ -1,6 +1,7 @@
 import os
 import environ
 import random
+import requests
 
 from pathlib import Path
 from eskiz_sms import EskizSMS
@@ -19,3 +20,13 @@ def send_sms(code: str, phone_num: str) -> None:
 
 def generate_code() -> int:
     return random.randint(100000, 999999)
+
+
+def get_currency_rate():
+    response = requests.get("https://nbu.uz/en/exchange-rates/json/")
+
+    if response.status_code == 200:
+        data = response.json()
+        return data[23]["nbu_buy_price"]
+    else:
+        print(f"Failed to retrieve the page. Status code: {response.status_code}")

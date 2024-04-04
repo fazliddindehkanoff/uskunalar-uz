@@ -23,6 +23,7 @@ class SubCategory(TranslatableModel, BaseModel):
         title=models.CharField(max_length=250, verbose_name="Title")
     )
     category = models.ForeignKey("Category", on_delete=models.CASCADE)
+    icon = models.FileField(null=True)
 
     def __str__(self) -> str:
         return self.title_uz

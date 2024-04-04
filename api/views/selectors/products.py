@@ -1,5 +1,7 @@
-from rest_framework.exceptions import NotFound
 from random import sample
+from datetime import datetime, timedelta
+
+from rest_framework.exceptions import NotFound
 
 from api.models import Product
 from .supplier import get_supplier_data
@@ -10,6 +12,10 @@ def _calc_product_cost(product: Product) -> str:
         return f"{product.price}"
     else:
         return f"{product.min_price}-{product.max_price}"
+
+
+def _calc_product_cost_with_disc(product: Product) -> str:
+    pass
 
 
 def product_detail(request, lang_code: str, product_id: int) -> dict:
@@ -23,6 +29,9 @@ def product_detail(request, lang_code: str, product_id: int) -> dict:
 
         product_data["id"] = product.pk
         product_data["price"] = _calc_product_cost(product=product)
+        product_data["price_with_discount"] = _calc_product_cost_with_disc(
+            product=product
+        )
         product_data["images"] = [
             request.build_absolute_uri(image.image.url)
             for image in product.images.all()
@@ -148,9 +157,13 @@ def get_products_list(queryset, lang_code, request):
                 else ""
             ),
             "cip_type": product.get_cip_type_display(),
-            "availability_status": product.get_availability_status_display(
+            "availability_status_readable": product.get_availability_status_display(
                 lang_code=lang_code
             ),
+            "availability_status": (
+                "inStock" if product.availability_status == 1 else "outStock"
+            ),
+            "is_new": product.created_at >= datetime.now() - timedelta(days=7),
             "view_count": product.view_count,
         }
         product_data["specifications"] = [
