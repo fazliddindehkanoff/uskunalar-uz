@@ -2,6 +2,7 @@ from random import sample
 from datetime import datetime, timedelta
 
 from rest_framework.exceptions import NotFound
+from django.utils import timezone
 
 from api.models import Product
 from .supplier import get_supplier_data
@@ -37,7 +38,7 @@ def product_detail(request, lang_code: str, product_id: int) -> dict:
 
         product_data["id"] = product.pk
         product_data["price"] = _calc_product_cost(product=product)
-        product_data["discount"] = product.discount > 0
+        product_data["has_discount"] = product.discount > 0
         product_data["price_with_discount"] = _calc_product_cost_with_disc(
             product=product
         )
@@ -155,6 +156,8 @@ def get_products_list(queryset, lang_code, request):
             "id": product.pk,
             "name": product.get_translated_field("name", lang_code),
             "price": _calc_product_cost(product=product),
+            "has_discount": product.discount > 0,
+            "price_with_discount": _calc_product_cost_with_disc(product=product),
             "images": [
                 request.build_absolute_uri(image.image.url)
                 for image in product.images.all()
@@ -171,7 +174,7 @@ def get_products_list(queryset, lang_code, request):
             "availability_status": (
                 "inStock" if product.availability_status == 1 else "outStock"
             ),
-            "is_new": product.created_at >= datetime.now() - timedelta(days=7),
+            "is_new": product.created_at >= timezone.now() - timedelta(days=7),
             "view_count": product.view_count,
         }
         product_data["specifications"] = [
