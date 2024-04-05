@@ -14,8 +14,17 @@ def _calc_product_cost(product: Product) -> str:
         return f"{product.min_price}-{product.max_price}"
 
 
+def discount_calc(price: int, discount: int) -> str:
+    return price - (price * discount) / 100
+
+
 def _calc_product_cost_with_disc(product: Product) -> str:
-    pass
+    discount = product.discount
+    if discount > 0:
+        if product.price and product.price != 0:
+            return f"{discount_calc(product.price, discount)}"
+        else:
+            return f"{discount_calc(product.min_price, discount)}-{discount_calc(product.max_price, discount)}"
 
 
 def product_detail(request, lang_code: str, product_id: int) -> dict:
@@ -23,12 +32,12 @@ def product_detail(request, lang_code: str, product_id: int) -> dict:
     product = Product.objects.filter(pk=product_id).first()
 
     if product:
-        # Incrementing the views count
         product.view_count += 1
         product.save()
 
         product_data["id"] = product.pk
         product_data["price"] = _calc_product_cost(product=product)
+        product_data["discount"] = product.discount > 0
         product_data["price_with_discount"] = _calc_product_cost_with_disc(
             product=product
         )
@@ -49,7 +58,6 @@ def product_detail(request, lang_code: str, product_id: int) -> dict:
             }
             for feature in product.specifications.all()
         ]
-        # Translated fields
         product_data["name"] = product.get_translated_field("name", lang_code)
         product_data["description"] = product.get_translated_field(
             "description", lang_code
