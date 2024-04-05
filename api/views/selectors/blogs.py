@@ -45,26 +45,32 @@ def get_blog_posts_list(queryset, lang_code, request):
     for post in queryset:
         post_data = {
             "id": post.pk,
+            "cover": request.build_absolute_uri(post.cover.url) if post.cover else "",
             "title": post.get_translated_field("title", lang_code),
             "content": post.get_translated_field("content", lang_code),
             "created_at": post.created_at,
         }
-        # Add more data as needed
         blog_posts_data.append(post_data)
 
     return blog_posts_data
 
 
-def blog_post_detail(lang_code: str, blog_post_id: int) -> dict:
+def blog_post_detail(lang_code: str, blog_post_id: int, request) -> dict:
     blog_post = Blog.objects.filter(pk=blog_post_id).first()
 
     if blog_post:
         blog_post.view_count += 1
         blog_post.save()
         return {
-            "cover": blog_post.cover.url if blog_post.cover else "",
+            "id": blog_post.pk,
+            "cover": (
+                request.build_absolute_uri(blog_post.cover.url)
+                if blog_post.cover
+                else ""
+            ),
             "title": blog_post.get_translated_field("title", lang_code),
             "content": blog_post.get_translated_field("content", lang_code),
+            "created_at": blog_post.created_at,
         }
 
     else:

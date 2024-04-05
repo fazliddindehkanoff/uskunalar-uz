@@ -33,5 +33,6 @@ class BlogDetailAPIView(APIView):
             blog_post_detail(
                 lang_code=lang_code,
                 blog_post_id=pk,
+                request=request,
             )
         )
