@@ -1,12 +1,14 @@
 from api.models import Category, SubCategory
 
 
-def list_categories(lang_code):
+def list_categories(lang_code, request):
     categories = Category.objects.all()
     category_data = [
         {
             "id": category.pk,
-            "icon": category.icon.url if category.icon else "",
+            "icon": (
+                request.build_absolute_uri(category.icon.url) if category.icon else ""
+            ),
             "title": category.get_translated_field("title", lang_code),
             "product_count": category.category_products_set.count(),
         }
@@ -15,7 +17,7 @@ def list_categories(lang_code):
     return category_data
 
 
-def list_subcategories(lang_code):
+def list_subcategories(lang_code, request):
     subcategories = SubCategory.objects.all()
     subcategory_data = [
         {
@@ -23,6 +25,11 @@ def list_subcategories(lang_code):
             "category": (
                 subcategory.category.get_translated_field("title", lang_code)
                 if subcategory.category
+                else ""
+            ),
+            "icon": (
+                request.build_absolute_uri(subcategory.icon.url)
+                if subcategory.icon
                 else ""
             ),
             "title": subcategory.get_translated_field("title", lang_code),

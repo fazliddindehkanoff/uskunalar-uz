@@ -11,7 +11,7 @@ class CategoryListApiView(APIView):
     def get(self, request):
         lang_code = request.META.get("HTTP_ACCEPT_LANGUAGE")
 
-        return Response(list_categories(lang_code))
+        return Response(list_categories(lang_code, request))
 
 
 class SubCategoryListApiView(APIView):
@@ -21,4 +21,4 @@ class SubCategoryListApiView(APIView):
     def get(self, request):
         lang_code = request.META.get("HTTP_ACCEPT_LANGUAGE")
 
-        return Response(list_subcategories(lang_code))
+        return Response(list_subcategories(lang_code, request))

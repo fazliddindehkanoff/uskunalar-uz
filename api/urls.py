@@ -24,5 +24,5 @@ urlpatterns = [
     path("partner-logos/", PartnersLogoListAPIView.as_view()),
     path("products/", ProductListAPIView.as_view()),
     path("product/<int:pk>/", ProductDetailAPIView.as_view()),
-    path("sub_categories/", CategoryListApiView.as_view()),
+    path("sub-categories/", CategoryListApiView.as_view()),
 ]
