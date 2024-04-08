@@ -19,7 +19,12 @@ def _calc_product_cost(product: Product, in_uzs=False) -> str:
     if product.price and product.price != 0:
         return f"{product.price*currency_rate:,}"
     elif product.min_price is not None and product.min_price is not None:
-        return f"{product.min_price*currency_rate:,}-{product.max_price*currency_rate}"
+        try:
+            return (
+                f"{product.min_price*currency_rate:,}-{product.max_price*currency_rate}"
+            )
+        except Exception:
+            return f"there is an error with id:{product.pk}"
 
 
 def discount_calc(price: int, discount: int) -> str:
