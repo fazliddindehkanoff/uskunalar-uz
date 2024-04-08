@@ -5,27 +5,37 @@ from rest_framework.exceptions import NotFound
 from django.utils import timezone
 
 from api.models import Product
+from api.utils import get_currency_rate
 from .supplier import get_supplier_data
 
 
-def _calc_product_cost(product: Product) -> str:
-    if product.price and product.price != 0:
-        return f"{product.price}"
+def _calc_product_cost(product: Product, in_uzs=False) -> str:
+
+    if in_uzs:
+        currency_rate = get_currency_rate()
     else:
-        return f"{product.min_price}-{product.max_price}"
+        currency_rate = 1
+
+    if product.price and product.price != 0:
+        return f"{product.price*currency_rate:,}"
+    elif product.min_price is not None and product.min_price is not None:
+        return f"{product.min_price*currency_rate:,}-{product.max_price*currency_rate}"
 
 
 def discount_calc(price: int, discount: int) -> str:
     return price - (price * discount) / 100
 
 
-def _calc_product_cost_with_disc(product: Product) -> str:
+def _calc_product_cost_with_disc(product: Product, in_uzs=False) -> str:
     discount = product.discount
+    currency_rate = 1
+    if in_uzs:
+        currency_rate = get_currency_rate()
     if discount > 0:
         if product.price and product.price != 0:
-            return f"{discount_calc(product.price, discount)}"
+            return f"{discount_calc(product.price*currency_rate, discount):,}"
         else:
-            return f"{discount_calc(product.min_price, discount)}-{discount_calc(product.max_price, discount)}"
+            return f"{discount_calc(product.min_price*currency_rate, discount):,}-{discount_calc(product.max_price*currency_rate, discount):,}"
 
 
 def product_detail(request, lang_code: str, product_id: int) -> dict:
@@ -37,10 +47,14 @@ def product_detail(request, lang_code: str, product_id: int) -> dict:
         product.save()
 
         product_data["id"] = product.pk
-        product_data["price"] = _calc_product_cost(product=product)
+        product_data["price_in_usd"] = _calc_product_cost(product=product)
+        product_data["price_in_uzs"] = _calc_product_cost(product=product, in_uzs=True)
         product_data["has_discount"] = product.discount > 0
-        product_data["price_with_discount"] = _calc_product_cost_with_disc(
+        product_data["price_with_discount_in_usd"] = _calc_product_cost_with_disc(
             product=product
+        )
+        product_data["price_with_discount_in_uzs"] = _calc_product_cost_with_disc(
+            product=product, in_uzs=True
         )
         product_data["images"] = [
             request.build_absolute_uri(image.image.url)
@@ -155,9 +169,13 @@ def get_products_list(queryset, lang_code, request):
         product_data = {
             "id": product.pk,
             "name": product.get_translated_field("name", lang_code),
-            "price": _calc_product_cost(product=product),
+            "price_in_usd": _calc_product_cost(product=product),
+            "price_in_uzs": _calc_product_cost(product=product, in_uzs=True),
             "has_discount": product.discount > 0,
-            "price_with_discount": _calc_product_cost_with_disc(product=product),
+            "price_with_discount_in_usd": _calc_product_cost_with_disc(product=product),
+            "price_with_discount_in_uzs": _calc_product_cost_with_disc(
+                product=product, in_uzs=True
+            ),
             "images": [
                 request.build_absolute_uri(image.image.url)
                 for image in product.images.all()
