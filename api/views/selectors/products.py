@@ -1,5 +1,5 @@
 from random import sample
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from rest_framework.exceptions import NotFound
 from django.utils import timezone
@@ -20,9 +20,7 @@ def _calc_product_cost(product: Product, in_uzs=False) -> str:
         return f"{product.price*currency_rate:,}"
     elif product.min_price is not None and product.min_price is not None:
         try:
-            return (
-                f"{product.min_price*currency_rate:,}-{product.max_price*currency_rate}"
-            )
+            return f"{product.min_price*currency_rate:,}-{product.max_price*currency_rate:,}"
         except Exception:
             return f"there is an error with id:{product.pk}"
 
@@ -55,6 +53,7 @@ def product_detail(request, lang_code: str, product_id: int) -> dict:
         product_data["price_in_usd"] = _calc_product_cost(product=product)
         product_data["price_in_uzs"] = _calc_product_cost(product=product, in_uzs=True)
         product_data["has_discount"] = product.discount > 0
+        product_data["discount_persentage"] = product.discount
         product_data["price_with_discount_in_usd"] = _calc_product_cost_with_disc(
             product=product
         )
@@ -177,6 +176,7 @@ def get_products_list(queryset, lang_code, request):
             "price_in_usd": _calc_product_cost(product=product),
             "price_in_uzs": _calc_product_cost(product=product, in_uzs=True),
             "has_discount": product.discount > 0,
+            "discount_persentage": product.discount,
             "price_with_discount_in_usd": _calc_product_cost_with_disc(product=product),
             "price_with_discount_in_uzs": _calc_product_cost_with_disc(
                 product=product, in_uzs=True
