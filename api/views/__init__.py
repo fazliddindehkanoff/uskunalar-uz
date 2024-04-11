@@ -5,6 +5,6 @@ from .authentication import (
 )
 from .banners import BannerListApiView
 from .blogs import BlogListAPIView, BlogDetailAPIView
-from .categories import CategoryListApiView
+from .categories import CategoryListApiView, SubCategoryListApiView
 from .products import ProductDetailAPIView, ProductListAPIView
 from .partners import PartnersLogoListAPIView

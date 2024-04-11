@@ -7,6 +7,7 @@ from api.views import (
     BlogDetailAPIView,
     PartnersLogoListAPIView,
     CategoryListApiView,
+    SubCategoryListApiView,
     UserVerificationView,
     UserRegistrationView,
     GoogleLoginAPIView,
@@ -24,5 +25,5 @@ urlpatterns = [
     path("partner-logos/", PartnersLogoListAPIView.as_view()),
     path("products/", ProductListAPIView.as_view()),
     path("product/<int:pk>/", ProductDetailAPIView.as_view()),
-    path("sub-categories/", CategoryListApiView.as_view()),
+    path("sub-categories/", SubCategoryListApiView.as_view()),
 ]
