@@ -33,7 +33,7 @@ def list_subcategories(lang_code, request):
                 else ""
             ),
             "title": subcategory.get_translated_field("title", lang_code),
-            "product_count": subcategory.category_products_set.count(),
+            "product_count": subcategory.subcategory_products_set.count(),
         }
         for subcategory in subcategories
     ]
