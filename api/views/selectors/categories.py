@@ -22,7 +22,7 @@ def list_subcategories(lang_code, request, category_id=None):
     subcategories = SubCategory.objects.all()
 
     if category_id:
-        subcategories.filter(category_id=category_id)
+        subcategories = subcategories.filter(category_id=category_id)
 
     subcategory_data = [
         {
