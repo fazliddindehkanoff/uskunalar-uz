@@ -20,5 +20,6 @@ class SubCategoryListApiView(APIView):
 
     def get(self, request):
         lang_code = request.META.get("HTTP_ACCEPT_LANGUAGE")
+        category_id = request.query_params.get("category_id", None)
 
-        return Response(list_subcategories(lang_code, request))
+        return Response(list_subcategories(lang_code, request, category_id))

@@ -9,7 +9,7 @@ from .base import TranslatableModel, TranslatedFields
 class Blog(TranslatableModel, BaseModel):
     translations = TranslatedFields(
         title=models.CharField(max_length=250, verbose_name="Title"),
-        content=MDTextField("Text", config_name="extends"),
+        content=MDTextField("Blog Content", config_name="extends"),
     )
     cover = models.ImageField(null=True, blank=True)
     view_count = models.IntegerField(default=0)
@@ -27,7 +27,7 @@ class Line(TranslatableModel, BaseModel):
     translations = TranslatedFields(
         title=models.CharField(max_length=250, verbose_name="Title"),
         short_description=models.TextField(),
-        long_description=MDTextField("Text", config_name="extends"),
+        long_description=MDTextField("Description", config_name="extends"),
     )
     price = models.IntegerField()
     category = models.ForeignKey(LineCategory, on_delete=models.CASCADE)
@@ -39,8 +39,8 @@ class Line(TranslatableModel, BaseModel):
 class Work(TranslatableModel, BaseModel):
     translations = TranslatedFields(
         title=models.CharField(max_length=250, verbose_name="Title"),
-        short_description=MDTextField("Text", config_name="extends"),
-        long_description=MDTextField("Text", config_name="extends"),
+        short_description=MDTextField("Short description", config_name="extends"),
+        long_description=MDTextField("Description", config_name="extends"),
     )
     image = models.ImageField()
     views = models.IntegerField()

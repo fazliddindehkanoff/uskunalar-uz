@@ -1,4 +1,5 @@
 from api.models import Category, SubCategory
+from api.models.category import LineCategory
 
 
 def list_categories(lang_code, request):
@@ -17,8 +18,12 @@ def list_categories(lang_code, request):
     return category_data
 
 
-def list_subcategories(lang_code, request):
+def list_subcategories(lang_code, request, category_id=None):
     subcategories = SubCategory.objects.all()
+
+    if category_id:
+        subcategories.filter(category_id=category_id)
+
     subcategory_data = [
         {
             "id": subcategory.pk,
@@ -38,3 +43,7 @@ def list_subcategories(lang_code, request):
         for subcategory in subcategories
     ]
     return subcategory_data
+
+
+def list_line_categories(lang_code):
+    line_category = LineCategory.objects.all()
