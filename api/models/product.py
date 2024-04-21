@@ -25,6 +25,7 @@ class Supplier(TranslatableModel, BaseModel):
 
 
 class Product(BaseModel, TranslatableModel):
+    approved = models.BooleanField(default=False)
     translations = TranslatedFields(
         name=models.CharField(max_length=250, verbose_name="Name", blank=True),
         short_description=models.TextField(
@@ -59,7 +60,6 @@ class Product(BaseModel, TranslatableModel):
         default=1, choices=AVAILABILITY_STATUS_CHOISES
     )
     discount = models.IntegerField(default=0)
-    approved = models.BooleanField(default=False)
     cip_type = models.IntegerField(default=1, choices=CIP_STATUS_CHOISES)
     view_count = models.IntegerField(default=0)
     related_products = models.ManyToManyField(
