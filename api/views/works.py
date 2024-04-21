@@ -1,10 +1,13 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_yasg.utils import swagger_auto_schema
 
 from .selectors import work_detail, list_works
+from .docs import work_detail_responses, list_works_responses
 
 
 class WorkListAPIView(APIView):
+    @swagger_auto_schema(responses=list_works_responses)
     def get(self, request):
         order_by = request.query_params.get("order_by")
         query = request.query_params.get("search")
@@ -26,6 +29,7 @@ class WorkListAPIView(APIView):
 
 
 class WorkDetailAPIView(APIView):
+    @swagger_auto_schema(responses=work_detail_responses)
     def get(self, request, pk):
         lang_code = request.META.get("HTTP_ACCEPT_LANGUAGE")
 

@@ -1,9 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
 
 from api.views.selectors import product_detail, list_products
+from .docs import products_list_get_params
 
 
 class ProductDetailAPIView(APIView):
@@ -26,44 +26,7 @@ class ProductListAPIView(APIView):
     permission_classes = []
 
     @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
-                "category_id",
-                openapi.IN_QUERY,
-                description="Category ID",
-                type=openapi.TYPE_INTEGER,
-            ),
-            openapi.Parameter(
-                "subcategory_id",
-                openapi.IN_QUERY,
-                description="Subcategory ID",
-                type=openapi.TYPE_INTEGER,
-            ),
-            openapi.Parameter(
-                "order_by",
-                openapi.IN_QUERY,
-                description="Order by field default(view_count)",
-                type=openapi.TYPE_STRING,
-            ),
-            openapi.Parameter(
-                "search",
-                openapi.IN_QUERY,
-                description="Search query",
-                type=openapi.TYPE_STRING,
-            ),
-            openapi.Parameter(
-                "page",
-                openapi.IN_QUERY,
-                description="Page number",
-                type=openapi.TYPE_INTEGER,
-            ),
-            openapi.Parameter(
-                "page_size",
-                openapi.IN_QUERY,
-                description="Number of items per page",
-                type=openapi.TYPE_INTEGER,
-            ),
-        ],
+        manual_parameters=products_list_get_params,
         responses={200: "Successful response"},
     )
     def get(self, request):
