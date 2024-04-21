@@ -3,13 +3,18 @@ from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 
 from api.views.selectors import product_detail, list_products
-from .docs import products_list_get_params
+from .docs import (
+    products_list_get_params,
+    product_detail_response,
+    list_products_responses,
+)
 
 
 class ProductDetailAPIView(APIView):
     authentication_classes = []
     permission_classes = []
 
+    @swagger_auto_schema(responses=product_detail_response)
     def get(self, request, pk):
         lang_code = request.META.get("HTTP_ACCEPT_LANGUAGE")
         return Response(
@@ -27,7 +32,7 @@ class ProductListAPIView(APIView):
 
     @swagger_auto_schema(
         manual_parameters=products_list_get_params,
-        responses={200: "Successful response"},
+        responses=list_products_responses,
     )
     def get(self, request):
         category_id = int(request.query_params.get("category_id", 0))
