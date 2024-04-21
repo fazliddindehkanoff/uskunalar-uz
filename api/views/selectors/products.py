@@ -5,8 +5,8 @@ from rest_framework.exceptions import NotFound
 from django.utils import timezone
 
 from api.models import Product
-from api.utils import get_currency_rate
-from .supplier import get_supplier_data
+from api.utils import get_currency_rate, paginate_queryset
+from .suppliers import get_supplier_data
 
 
 def _calc_product_cost(product: Product, in_uzs=False) -> str:
@@ -148,12 +148,10 @@ def list_products(
     if random:
         queryset = sample(list(queryset), len(queryset))
 
+    total_count, queryset = paginate_queryset(queryset, page, page_size)
+
     if order_by:
         queryset = queryset.order_by(order_by)
-
-    start = (page - 1) * page_size
-    end = start + page_size
-    queryset = queryset[start:end]
 
     products_data = get_products_list(
         queryset=queryset, lang_code=lang_code, request=request

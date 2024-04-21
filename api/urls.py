@@ -12,6 +12,12 @@ from api.views import (
     UserRegistrationView,
     GoogleLoginAPIView,
     BannerListApiView,
+    LineListAPIView,
+    LineDetailAPIView,
+    LineCategoryListApiView,
+    VideoListAPIView,
+    WorkListAPIView,
+    WorkDetailAPIView,
 )
 
 urlpatterns = [
@@ -20,10 +26,16 @@ urlpatterns = [
     path("auth/google/", GoogleLoginAPIView.as_view(), name="google_login"),
     path("banners/", BannerListApiView.as_view()),
     path("blog-posts/", BlogListAPIView.as_view()),
-    path("blog-post/<int:pk>/", BlogDetailAPIView.as_view()),
+    path("blog-posts/<int:pk>/", BlogDetailAPIView.as_view()),
+    path("line-posts/", LineListAPIView.as_view()),
+    path("line-posts/<int:pk>/", LineDetailAPIView.as_view()),
     path("categories/", CategoryListApiView.as_view()),
-    path("partner-logos/", PartnersLogoListAPIView.as_view()),
-    path("products/", ProductListAPIView.as_view()),
-    path("product/<int:pk>/", ProductDetailAPIView.as_view()),
     path("sub-categories/", SubCategoryListApiView.as_view()),
+    path("line-categories/", LineCategoryListApiView.as_view()),
+    path("partner-logos/", PartnersLogoListAPIView.as_view()),
+    path("videos/", VideoListAPIView.as_view()),
+    path("products/", ProductListAPIView.as_view()),
+    path("products/<int:pk>/", ProductDetailAPIView.as_view()),
+    path("works/", WorkListAPIView.as_view()),
+    path("works/<int:pk>/", WorkDetailAPIView.as_view()),
 ]

@@ -30,3 +30,11 @@ def get_currency_rate():
         return int(float(data[23]["nbu_buy_price"]))
     else:
         print(f"Failed to retrieve the page. Status code: {response.status_code}")
+
+
+def paginate_queryset(queryset, page, page_size):
+    total_count = queryset.count()
+    start = (page - 1) * page_size
+    end = start + page_size
+    queryset = queryset[start:end]
+    return total_count, queryset

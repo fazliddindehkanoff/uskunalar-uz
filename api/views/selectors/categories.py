@@ -47,3 +47,12 @@ def list_subcategories(lang_code, request, category_id=None):
 
 def list_line_categories(lang_code):
     line_category = LineCategory.objects.all()
+    category_data = [
+        {
+            "id": category.pk,
+            "title": category.get_translated_field("title", lang_code),
+            "line_count": category.lines.count(),
+        }
+        for category in line_category
+    ]
+    return category_data

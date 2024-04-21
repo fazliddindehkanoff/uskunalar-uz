@@ -18,7 +18,7 @@ class Blog(TranslatableModel, BaseModel):
 class Video(TranslatableModel, BaseModel):
     translations = TranslatedFields(
         title=models.CharField(max_length=250, verbose_name="Title"),
-        description=models.TextField(),
+        description=MDTextField("description", config_name="extends"),
     )
     video_link = models.CharField(max_length=250)
 
@@ -26,14 +26,16 @@ class Video(TranslatableModel, BaseModel):
 class Line(TranslatableModel, BaseModel):
     translations = TranslatedFields(
         title=models.CharField(max_length=250, verbose_name="Title"),
-        short_description=models.TextField(),
+        short_description=models.TextField(verbose_name="Short description"),
         long_description=MDTextField("Description", config_name="extends"),
     )
     price = models.IntegerField()
-    category = models.ForeignKey(LineCategory, on_delete=models.CASCADE)
+    category = models.ForeignKey(
+        LineCategory, on_delete=models.CASCADE, related_name="lines"
+    )
     image = models.ImageField()
     banner = models.ImageField()
-    views = models.IntegerField()
+    view_count = models.IntegerField()
 
 
 class Work(TranslatableModel, BaseModel):
@@ -43,4 +45,4 @@ class Work(TranslatableModel, BaseModel):
         long_description=MDTextField("Description", config_name="extends"),
     )
     image = models.ImageField()
-    views = models.IntegerField()
+    view_count = models.IntegerField()
