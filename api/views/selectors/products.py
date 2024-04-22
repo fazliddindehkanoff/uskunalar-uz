@@ -143,12 +143,10 @@ def list_products(
     if sub_category_id != 0:
         queryset = queryset.filter(subcategory_id=sub_category_id)
 
-    total_count = queryset.count()
+    total_count, queryset = paginate_queryset(queryset, page, page_size)
 
     if random:
         queryset = sample(list(queryset), len(queryset))
-
-    total_count, queryset = paginate_queryset(queryset, page, page_size)
 
     if order_by:
         queryset = queryset.order_by(order_by)
