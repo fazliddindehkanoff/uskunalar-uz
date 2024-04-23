@@ -18,3 +18,6 @@ class PartnerLogos(BaseModel):
 class BackgroundBanner(BaseModel):
     title = models.CharField(default="", blank=True, max_length=255)
     image = models.FileField(verbose_name="banner", null=True)
+
+    def __str__(self) -> str:
+        return self.title
