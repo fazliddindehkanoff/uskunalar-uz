@@ -14,15 +14,17 @@ def _calc_product_cost(product: Product, in_uzs=False) -> str:
     if in_uzs:
         currency_rate = get_currency_rate()
         currency_symbol = ""
+        seperator = " "
     else:
         currency_rate = 1
         currency_symbol = "$"
+        seperator = ","
 
     if product.price and product.price != 0:
-        return f"{currency_symbol} {product.price*currency_rate:,}"
+        return f"{currency_symbol}{product.price*currency_rate:,}"
     elif product.min_price is not None and product.min_price is not None:
         try:
-            return f"{currency_symbol} {product.min_price*currency_rate:,} - {currency_symbol} {product.max_price*currency_rate:,}"
+            return f"{currency_symbol}{product.min_price*currency_rate: } - {currency_symbol}{product.max_price*currency_rate:,}"
         except Exception:
             return f"there is an error with id:{product.pk}"
 
@@ -42,7 +44,7 @@ def _calc_product_cost_with_disc(product: Product, in_uzs=False) -> str:
 
     if discount > 0:
         if product.price and product.price != 0:
-            return f"{currency_symbol} {discount_calc(product.price*currency_rate, discount):,}"
+            return f"{currency_symbol}{discount_calc(product.price*currency_rate, discount):,}"
         else:
             return f"{currency_symbol}{discount_calc(product.min_price*currency_rate, discount):,} - {currency_symbol}{discount_calc(product.max_price*currency_rate, discount):,}"
 
