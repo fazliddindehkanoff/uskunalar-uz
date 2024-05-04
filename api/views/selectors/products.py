@@ -13,32 +13,38 @@ def _calc_product_cost(product: Product, in_uzs=False) -> str:
 
     if in_uzs:
         currency_rate = get_currency_rate()
+        currency_symbol = ""
     else:
         currency_rate = 1
+        currency_symbol = "$"
 
     if product.price and product.price != 0:
-        return f"{product.price*currency_rate:,}"
+        return f"{currency_symbol} {product.price*currency_rate:,}"
     elif product.min_price is not None and product.min_price is not None:
         try:
-            return f"{product.min_price*currency_rate:,}-{product.max_price*currency_rate:,}"
+            return f"{currency_symbol} {product.min_price*currency_rate:,} - {currency_symbol} {product.max_price*currency_rate:,}"
         except Exception:
             return f"there is an error with id:{product.pk}"
 
 
 def discount_calc(price: int, discount: int) -> str:
-    return price - (price * discount) / 100
+    return price - (price * discount) // 100
 
 
 def _calc_product_cost_with_disc(product: Product, in_uzs=False) -> str:
     discount = product.discount
     currency_rate = 1
+    currency_symbol = "$"
+
     if in_uzs:
         currency_rate = get_currency_rate()
+        currency_symbol = ""
+
     if discount > 0:
         if product.price and product.price != 0:
-            return f"{discount_calc(product.price*currency_rate, discount):,}"
+            return f"{currency_symbol} {discount_calc(product.price*currency_rate, discount):,}"
         else:
-            return f"{discount_calc(product.min_price*currency_rate, discount):,}-{discount_calc(product.max_price*currency_rate, discount):,}"
+            return f"{currency_symbol}{discount_calc(product.min_price*currency_rate, discount):,} - {currency_symbol}{discount_calc(product.max_price*currency_rate, discount):,}"
 
 
 def product_detail(request, lang_code: str, product_id: int) -> dict:
@@ -102,6 +108,9 @@ def product_detail(request, lang_code: str, product_id: int) -> dict:
         product_data["discount"] = product.discount
         product_data["cip_type"] = product.get_cip_type_display()
         product_data["view_count"] = product.view_count
+        product_data["is_new"] = (
+            product.created_at >= timezone.now() - timedelta(days=7),
+        )
         product_data["related_products"] = get_products_list(
             product.related_products.all(),
             lang_code=lang_code,
