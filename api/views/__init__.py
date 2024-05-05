@@ -2,6 +2,7 @@ from .authentication import (
     UserRegistrationView,
     UserVerificationView,
     GoogleLoginAPIView,
+    LoginView,
 )
 from .banners import BannerListApiView
 from .blogs import (

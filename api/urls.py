@@ -18,10 +18,12 @@ from api.views import (
     VideoListAPIView,
     WorkListAPIView,
     WorkDetailAPIView,
+    LoginView,
 )
 
 urlpatterns = [
     path("auth/register/", UserRegistrationView.as_view()),
+    path("auth/login/", LoginView.as_view()),
     path("auth/phone-verification/", UserVerificationView.as_view()),
     path("auth/google/", GoogleLoginAPIView.as_view(), name="google_login"),
     path("banners/", BannerListApiView.as_view()),

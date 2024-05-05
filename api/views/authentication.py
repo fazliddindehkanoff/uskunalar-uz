@@ -2,10 +2,11 @@ import os
 import environ
 
 from pathlib import Path
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 from google.oauth2 import id_token
 from google.auth.transport import requests
 
@@ -34,22 +35,24 @@ class UserRegistrationView(APIView):
 
     def post(self, request):
         serializer = UserRegistrationSerializer(data=request.data)
-        if serializer.is_valid():
-            phone_number = serializer.validated_data["phone_number"]
-            password = serializer.validated_data["password"]
-            user = User.objects.create_user(username=phone_number, password=password)
-            code = generate_code()
-            SMSCode.objects.create(code=code, user=user)
-            send_sms(code, phone_number)
+        serializer.is_valid(raise_exception=True)
+        phone_number = serializer.validated_data["phone_number"]
+        password = serializer.validated_data["password"]
+
+        if User.objects.filter(username=phone_number).exists():
             return Response(
-                {"user_id": user.id},
-                status=status.HTTP_201_CREATED,
-            )
-        else:
-            return Response(
-                serializer.errors,
+                {"message": "User with this phone number already exists."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        user = User.objects.create_user(username=phone_number, password=password)
+        code = generate_code()
+        SMSCode.objects.create(code=code, user=user)
+        send_sms(code, phone_number)
+        return Response(
+            {"user_id": user.id},
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class UserVerificationView(APIView):
@@ -85,13 +88,60 @@ class GoogleLoginAPIView(APIView):
 
     def post(self, request):
         token = request.data.get("id_token")
-        idinfo = id_token.verify_oauth2_token(
-            token,
-            requests.Request(),
-            env("GOOGLE_OAUTH_KEY"),
-        )
-        # TODO: Create or Update user using full name and email
-        full_name = idinfo.get("name")
-        email = idinfo.get("email")
+        try:
+            idinfo = id_token.verify_oauth2_token(
+                token,
+                requests.Request(),
+                env("GOOGLE_OAUTH_KEY"),
+            )
+            name = idinfo.get("name")
+            email = idinfo.get("email")
 
-        return Response({"ok": True})
+            user = User.objects.create(username=email, first_name=name)
+            refresh = RefreshToken.for_user(user)
+
+            return Response(
+                {
+                    "message": "Authorized successfully",
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token),
+                },
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            print(e)
+            return Response("ERROR")
+
+
+class LoginSerializer(serializers.Serializer):
+    phone_number = serializers.CharField(max_length=15)
+    password = serializers.CharField(max_length=128, write_only=True)
+
+
+class LoginView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        phone_number = serializer.validated_data["phone_number"]
+        password = serializer.validated_data["password"]
+
+        user = authenticate(request, username=phone_number, password=password)
+        if user is None:
+            return Response(
+                {"error": "Invalid phone number or password"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        refresh = RefreshToken.for_user(user)
+
+        return Response(
+            {
+                "message": "Authorized successfully",
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+            },
+            status=status.HTTP_200_OK,
+        )
