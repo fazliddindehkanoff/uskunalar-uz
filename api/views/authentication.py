@@ -91,7 +91,7 @@ class GoogleLoginAPIView(APIView):
         try:
             idinfo = id_token.verify_oauth2_token(
                 token,
-                requests.Request(),
+                request,
                 env("GOOGLE_OAUTH_KEY"),
             )
             name = idinfo.get("name")
