@@ -50,8 +50,8 @@ class UserRegistrationView(APIView):
         SMSCode.objects.create(code=code, user=user)
         send_sms(code, phone_number)
         return Response(
-            {"user_id": user.id},
-            status=status.HTTP_201_CREATED,
+            {"message": "Sms has been sent"},
+            status=status.HTTP_200_OK,
         )
 
 
@@ -77,7 +77,7 @@ class UserVerificationView(APIView):
         user.save()
 
         return Response(
-            {"message": "User activated successfully.", "user_id": user.pk},
+            {"message": "User activated successfully."},
             status=status.HTTP_200_OK,
         )
 
@@ -91,7 +91,7 @@ class GoogleLoginAPIView(APIView):
         try:
             idinfo = id_token.verify_oauth2_token(
                 token,
-                request,
+                requests.Request(),
                 env("GOOGLE_OAUTH_KEY"),
             )
             name = idinfo.get("name")
