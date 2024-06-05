@@ -21,7 +21,9 @@ class Supplier(TranslatableModel, BaseModel):
     contact_phone = models.CharField(max_length=255)
     country = models.CharField(max_length=255)
     logo = models.FileField()
-    cooperational_status = models.IntegerField(choices=COOPERATIONAL_STATUS_CHOICES)
+    cooperational_status = models.IntegerField(
+        choices=COOPERATIONAL_STATUS_CHOICES,
+    )
 
 
 class Product(BaseModel, TranslatableModel):

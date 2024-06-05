@@ -1,17 +1,17 @@
-from typing import Any
 from django.contrib import admin
 from django.db import models
-from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.forms import Form
-from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
 from googletrans import Translator
 from adminsortable2.admin import SortableAdminMixin
 from unfold.contrib.forms.widgets import WysiwygWidget
 from unfold.admin import ModelAdmin, TabularInline
-from unfold.forms import UserCreationForm, UserChangeForm, AdminPasswordChangeForm
+from unfold.forms import (
+    UserCreationForm,
+    UserChangeForm,
+    AdminPasswordChangeForm,
+)
 from unfold.decorators import display
 
 from .models.constants import EDITOR_LANG_CHOICES
@@ -137,6 +137,11 @@ class SubCategoryAdmin(ModelAdmin):
     list_display = ("title_uz", "title_en", "title_ru")
 
 
+@admin.register(ProductFeature)
+class ProductFeatureAdmin(ModelAdmin):
+    pass
+
+
 class ProductFeatureInlineAdmin(TabularInline):
     model = ProductFeature
     extra = 1
@@ -211,8 +216,9 @@ class ProductAdmin(ModelAdmin, SortableAdminMixin):
                 if field.name != "id":
                     field_name = str(field.name)
                     for lang_code, lang_name in EDITOR_LANG_CHOICES:
-                        condition = lang_code != user_language and field_name.endswith(
-                            lang_name
+                        condition = (
+                            lang_code != user_language
+                            and field_name.endswith(lang_name),
                         )
                         if condition:
                             try:
@@ -225,9 +231,8 @@ class ProductAdmin(ModelAdmin, SortableAdminMixin):
                                     src=request.user.get_language_display(),
                                     dest=lang_name,
                                 ).text
-                            except Exception as e:
-                                print(lang_name, f"error with translation\n{e}")
-                                translated_value = "Error occured with translation"
+                            except Exception:
+                                translated_value = "Error occured translation"
                             setattr(obj, field.name, translated_value)
 
         # Call the parent save_model method to save the object

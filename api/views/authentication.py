@@ -45,7 +45,10 @@ class UserRegistrationView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        user = User.objects.create_user(username=phone_number, password=password)
+        user = User.objects.create_user(
+            username=phone_number,
+            password=password,
+        )
         code = generate_code()
         SMSCode.objects.create(code=code, user=user)
         send_sms(code, phone_number)
@@ -99,7 +102,6 @@ class GoogleLoginAPIView(APIView):
 
             user = User.objects.create(username=email, first_name=name)
             refresh = RefreshToken.for_user(user)
-
             return Response(
                 {
                     "message": "Authorized successfully",
