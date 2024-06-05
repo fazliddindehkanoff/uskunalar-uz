@@ -142,6 +142,11 @@ class ProductFeatureAdmin(ModelAdmin):
     pass
 
 
+@admin.register(ProductImage)
+class ProductImageAdmin(ModelAdmin):
+    pass
+
+
 class ProductFeatureInlineAdmin(TabularInline):
     model = ProductFeature
     extra = 1
@@ -158,7 +163,7 @@ class ProductFeatureInlineAdmin(TabularInline):
         return formset_class
 
 
-class ProductImageAdmin(TabularInline):
+class ProductImageInlineAdmin(TabularInline):
     model = ProductImage
     extra = 1
 
@@ -240,7 +245,7 @@ class ProductAdmin(ModelAdmin, SortableAdminMixin):
 
     search_fields = ("name_uz", "name_en", "name_ru")
     list_display = ("name_uz", "name_en", "name_ru")
-    inlines = [ProductFeatureInlineAdmin, ProductImageAdmin]
+    inlines = [ProductFeatureInlineAdmin, ProductImageInlineAdmin]
 
 
 @admin.register(Banner)
