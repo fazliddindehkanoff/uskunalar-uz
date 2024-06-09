@@ -29,7 +29,7 @@ hstspreload==2024.5.1
 httpcore==0.9.1
 httpx==0.13.3
 hyperframe==5.2.0
-idna==2.10
+idna==3.7
 inflection==0.5.1
 markdownify==0.12.1
 oauthlib==3.2.2
