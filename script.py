@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-import markdownify
+import markdownify as md
 
 from api.models import Product
 
@@ -15,9 +15,9 @@ def handle_images(soup):
         img.replace_with(markdown_image)
 
 
-def table_to_markdown(table):
+def parse_table(table):
     """
-    Convert an HTML table to Markdown format.
+    Convert an HTML table to Markdown format while preserving the structure.
     """
     md_table = []
     rows = table.find_all("tr")
@@ -26,7 +26,7 @@ def table_to_markdown(table):
         md_row = []
         cols = row.find_all(["td", "th"])
         for col in cols:
-            col_content = col.get_text(separator=" ").strip()
+            col_content = col.decode_contents().replace("\n", " ").strip()
             md_row.append(col_content)
         md_table.append(" | ".join(md_row))
 
@@ -45,11 +45,11 @@ def html_to_markdown(html_content):
 
     # Handle tables manually
     for table in soup.find_all("table"):
-        markdown_table = table_to_markdown(table)
+        markdown_table = parse_table(table)
         table.replace_with(markdown_table)
 
     # Convert the remaining HTML content to Markdown format
-    markdown_content = markdownify.markdownify(str(soup), heading_style="ATX")
+    markdown_content = md.markdownify(str(soup), heading_style="ATX")
 
     return markdown_content
 
