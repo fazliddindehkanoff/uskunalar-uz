@@ -5,11 +5,7 @@ from api.models import Product
 def html_to_markdown(html_content):
 
     # Convert the remaining HTML content to Markdown format
-    h = html2text.HTML2Text()
-    h.ignore_images = False
-    h.ignore_tables = False
-    h.ignore_links = False
-    markdown_content = h.handle(html_content)
+    markdown_content = html2text.html2text(html_content)
 
     return markdown_content
 
