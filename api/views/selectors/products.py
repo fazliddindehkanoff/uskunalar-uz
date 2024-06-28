@@ -51,8 +51,19 @@ def _calc_product_cost_with_disc(
 def product_detail(
     request,
     lang_code: str,
-    product_id: int,
+    product_id: str,
 ) -> dict:
+
+    if "," in product_id:
+        currency_rate = get_currency_rate()
+        product_ids = product_id.split(",")
+        return get_products_list(
+            queryset="",
+            lang_code=lang_code,
+            request=request,
+            currency_rate=currency_rate,
+            product_ids=product_ids,
+        )
     cache_key = f"product_detail_{product_id}_{lang_code}"
     product_data = cache.get(cache_key)
 
@@ -208,7 +219,15 @@ def list_products(
     return updated_data
 
 
-def get_products_list(queryset, lang_code, request, currency_rate):
+def get_products_list(
+    queryset,
+    lang_code,
+    request,
+    currency_rate,
+    product_ids=None,
+):
+    if product_ids:
+        queryset = Product.objects.filter(pk__in=product_ids)
     return [
         {
             "id": product.pk,

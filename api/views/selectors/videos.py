@@ -12,7 +12,10 @@ def list_videos(lang_code: str, page: int = 1, page_size: int = 10) -> dict:
             {
                 "id": video.pk,
                 "title": video.get_translated_field("title", lang_code),
-                "description": video.get_translated_field("description", lang_code),
+                "description": video.get_translated_field(
+                    "description",
+                    lang_code,
+                ),
                 "video_link": video.video_link,
             }
         )
@@ -23,3 +26,19 @@ def list_videos(lang_code: str, page: int = 1, page_size: int = 10) -> dict:
         "page": page,
         "page_size": page_size,
     }
+
+
+def video_detail(lang_code: str, video_id: int) -> dict:
+    video = Video.objects.filter(id=video_id).first()
+    if video:
+        return {
+            "id": video.pk,
+            "title": video.get_translated_field("title", lang_code),
+            "description": video.get_translated_field(
+                "description",
+                lang_code,
+            ),
+            "video_link": video.video_link,
+        }
+    else:
+        return {"message": "Video not found"}

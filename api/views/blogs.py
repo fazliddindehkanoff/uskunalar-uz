@@ -1,4 +1,3 @@
-from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -18,6 +17,7 @@ from .selectors import (
     line_post_detail,
     list_line_posts,
     list_videos,
+    video_detail,
 )
 
 
@@ -128,3 +128,12 @@ class VideoListAPIView(APIView):
             page_size=page_size,
         )
         return Response(data)
+
+
+class VideoDetailApiView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, pk):
+        lang_code = request.META.get("HTTP_ACCEPT_LANGUAGE")
+        return video_detail(lang_code=lang_code, video_id=pk)
