@@ -221,10 +221,10 @@ def get_products_list(queryset, lang_code, request, currency_rate):
             "has_discount": product.discount > 0,
             "discount_persentage": product.discount,
             "price_with_discount_in_usd": _calc_product_cost_with_disc(
-                product=product,
+                product=product, currency_rate=currency_rate
             ),
             "price_with_discount_in_uzs": _calc_product_cost_with_disc(
-                product=product, in_uzs=True
+                product=product, in_uzs=True, currency_rate=currency_rate
             ),
             "images": [
                 request.build_absolute_uri(image.image.url)
