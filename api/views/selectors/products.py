@@ -10,9 +10,8 @@ from api.utils import get_currency_rate, paginate_queryset
 from .suppliers import get_supplier_data
 
 
-def _calc_product_cost(product: Product, in_uzs=False) -> str:
+def _calc_product_cost(product: Product, currency_rate, in_uzs=False) -> str:
     if in_uzs:
-        currency_rate = get_currency_rate()
         currency_symbol = ""
     else:
         currency_rate = 1
@@ -22,7 +21,7 @@ def _calc_product_cost(product: Product, in_uzs=False) -> str:
         return f"{currency_symbol}{product.price * currency_rate:,}"
     elif product.min_price is not None and product.max_price is not None:
         try:
-            return f"{currency_symbol}{product.min_price * currency_rate:,} - {currency_symbol}{product.max_price * currency_rate:,}"
+            return f"{currency_symbol}{product.min_price * currency_rate:,} - {currency_symbol}{product.max_price * currency_rate:,}"  # noqa
         except Exception:
             return f"there is an error with id:{product.pk}"
     return ""
@@ -32,24 +31,33 @@ def discount_calc(price: int, discount: int) -> int:
     return price - (price * discount) // 100
 
 
-def _calc_product_cost_with_disc(product: Product, in_uzs=False) -> str:
+def _calc_product_cost_with_disc(
+    product: Product,
+    currency_rate,
+    in_uzs=False,
+) -> str:
     discount = product.discount
-    currency_rate = get_currency_rate() if in_uzs else 1
+    currency_rate = currency_rate if in_uzs else 1
     currency_symbol = "" if in_uzs else "$"
 
     if discount > 0:
         if product.price and product.price != 0:
-            return f"{currency_symbol}{discount_calc(product.price * currency_rate, discount):,}"
+            return f"{currency_symbol}{discount_calc(product.price * currency_rate, discount):,}"  # noqa
         else:
-            return f"{currency_symbol}{discount_calc(product.min_price * currency_rate, discount):,} - {currency_symbol}{discount_calc(product.max_price * currency_rate, discount):,}"
+            return f"{currency_symbol}{discount_calc(product.min_price * currency_rate, discount):,} - {currency_symbol}{discount_calc(product.max_price * currency_rate, discount):,}"  # noqa
     return ""
 
 
-def product_detail(request, lang_code: str, product_id: int) -> dict:
+def product_detail(
+    request,
+    lang_code: str,
+    product_id: int,
+) -> dict:
     cache_key = f"product_detail_{product_id}_{lang_code}"
     product_data = cache.get(cache_key)
 
     if not product_data:
+        currency_rate = get_currency_rate()
         product = (
             Product.objects.select_related(
                 "category", "subcategory", "background_image"
@@ -67,15 +75,17 @@ def product_detail(request, lang_code: str, product_id: int) -> dict:
 
         product_data = {
             "id": product.pk,
-            "price_in_usd": _calc_product_cost(product=product),
+            "price_in_usd": _calc_product_cost(
+                product=product, currency_rate=currency_rate
+            ),
             "price_in_uzs": _calc_product_cost(product=product, in_uzs=True),
             "has_discount": product.discount > 0,
             "discount_persentage": product.discount,
             "price_with_discount_in_usd": _calc_product_cost_with_disc(
-                product=product,
+                product=product, currency_rate=currency_rate
             ),
             "price_with_discount_in_uzs": _calc_product_cost_with_disc(
-                product=product, in_uzs=True
+                product=product, in_uzs=True, currency_rate=currency_rate
             ),
             "images": [
                 request.build_absolute_uri(image.image.url)
@@ -148,7 +158,7 @@ def list_products(
     page: int = 1,
     page_size: int = 10,
 ) -> dict:
-    cache_key = f"product_list_{category_id}_{sub_category_id}_{search_query}_{order_by}_{page}_{page_size}_{lang_code}"
+    cache_key = f"product_list_{category_id}_{sub_category_id}_{search_query}_{order_by}_{page}_{page_size}_{lang_code}"  # noqa
     cached_data = cache.get(cache_key)
 
     # Query the total count of products matching the criteria
@@ -177,8 +187,12 @@ def list_products(
     if random:
         queryset = sample(list(queryset), len(queryset))
 
+    currency_rate = get_currency_rate()
     products_data = get_products_list(
-        queryset=queryset, lang_code=lang_code, request=request
+        queryset=queryset,
+        lang_code=lang_code,
+        request=request,
+        currency_rate=currency_rate,
     )
 
     updated_data = {
@@ -193,13 +207,17 @@ def list_products(
     return updated_data
 
 
-def get_products_list(queryset, lang_code, request):
+def get_products_list(queryset, lang_code, request, currency_rate):
     return [
         {
             "id": product.pk,
             "name": product.get_translated_field("name", lang_code),
-            "price_in_usd": _calc_product_cost(product=product),
-            "price_in_uzs": _calc_product_cost(product=product, in_uzs=True),
+            "price_in_usd": _calc_product_cost(
+                product=product, currency_rate=currency_rate
+            ),
+            "price_in_uzs": _calc_product_cost(
+                product=product, in_uzs=True, currency_rate=currency_rate
+            ),
             "has_discount": product.discount > 0,
             "discount_persentage": product.discount,
             "price_with_discount_in_usd": _calc_product_cost_with_disc(
@@ -218,7 +236,7 @@ def get_products_list(queryset, lang_code, request):
                 else ""
             ),
             "cip_type": product.get_cip_type_display(),
-            "availability_status_readable": product.get_availability_status_display(
+            "availability_status_readable": product.get_availability_status_display(  # noqa
                 lang_code=lang_code
             ),
             "availability_status": (
