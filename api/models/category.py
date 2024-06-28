@@ -9,6 +9,7 @@ class Category(TranslatableModel, BaseModel):
         title=models.CharField(max_length=250, verbose_name="Title")
     )
     icon = models.FileField()
+    available = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = "Category"
@@ -24,6 +25,7 @@ class SubCategory(TranslatableModel, BaseModel):
     )
     category = models.ForeignKey("Category", on_delete=models.CASCADE)
     icon = models.FileField(null=True)
+    available = models.BooleanField(default=True)
 
     def __str__(self) -> str:
         return self.title_uz

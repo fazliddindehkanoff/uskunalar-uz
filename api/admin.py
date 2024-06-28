@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.db import models
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
+from django.templatetags.static import static
 
 from googletrans import Translator
 from adminsortable2.admin import SortableAdminMixin
@@ -39,22 +40,22 @@ from .models import (
 
 @admin.register(Work)
 class WorkAdmin(ModelAdmin):
-    pass
+    list_display = ("id", "title_uz")
 
 
 @admin.register(Line)
 class LineAdmin(ModelAdmin):
-    pass
+    list_display = ("id", "title_uz")
 
 
 @admin.register(LineCategory)
 class LineCategoryAdmin(ModelAdmin):
-    pass
+    list_display = ("id", "title_uz")
 
 
 @admin.register(Video)
 class VideoAdmin(ModelAdmin):
-    pass
+    list_display = ("id", "title_uz")
 
 
 @admin.register(Order)
@@ -243,21 +244,25 @@ class ProductAdmin(ModelAdmin, SortableAdminMixin):
         # Call the parent save_model method to save the object
         super().save_model(request, obj, form, change)
 
-    search_fields = ("name_uz", "name_en", "name_ru")
-    list_display = ("name_uz", "name_en", "name_ru")
+    list_display = (
+        "id",
+        "name_uz",
+        "category",
+        "approved",
+    )
     inlines = [ProductFeatureInlineAdmin, ProductImageInlineAdmin]
 
 
 @admin.register(Banner)
 class BannerAdmin(ModelAdmin):
-    pass
+    list_display = ("id", "banner_image_uz")
 
 
 @admin.register(PartnerLogos)
 class PartnerLogoAdmin(ModelAdmin):
-    list_display = ("image",)
+    list_display = ("id", "image")
 
 
 @admin.register(BackgroundBanner)
 class BackgroundBannerAdmin(ModelAdmin):
-    list_display = ("image",)
+    list_display = ("id", "title", "image")
