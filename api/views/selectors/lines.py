@@ -70,7 +70,10 @@ def line_post_detail(lang_code: str, line_post_id: int, request) -> dict:
             "id": line_post.pk,
             "title": line_post.get_translated_field("title", lang_code),
             "price": line_post.price,
-            "category": line_post.category.get_translated_field("title", lang_code),
+            "category": line_post.category.get_translated_field(
+                "title",
+                lang_code,
+            ),
             "short_description": line_post.get_translated_field(
                 "short_description", lang_code
             ),

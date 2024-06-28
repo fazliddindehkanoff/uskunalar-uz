@@ -41,7 +41,10 @@ class Line(TranslatableModel, BaseModel):
 class Work(TranslatableModel, BaseModel):
     translations = TranslatedFields(
         title=models.CharField(max_length=250, verbose_name="Title"),
-        short_description=MDTextField("Short description", config_name="extends"),
+        short_description=MDTextField(
+            "Short description",
+            config_name="extends",
+        ),
         long_description=MDTextField("Description", config_name="extends"),
     )
     image = models.ImageField()

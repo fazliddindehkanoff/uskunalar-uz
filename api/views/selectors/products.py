@@ -116,6 +116,7 @@ def product_detail(
                 if product.category
                 else None
             ),
+            "category_id": product.category.id,
             "subcategory": (
                 product.subcategory.get_translated_field("title", lang_code)
                 if product.subcategory
