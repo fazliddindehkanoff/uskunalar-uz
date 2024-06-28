@@ -145,6 +145,7 @@ def product_detail(
                 product.related_products.all(),
                 lang_code=lang_code,
                 request=request,
+                currency_rate=currency_rate,
             ),
             "similar_products": get_products_list(
                 Product.objects.filter(
@@ -152,6 +153,7 @@ def product_detail(
                 ).exclude(pk=product_id),
                 lang_code=lang_code,
                 request=request,
+                currency_rate=currency_rate,
             ),
             "supplier": get_supplier_data(product.supplier),
         }
