@@ -89,7 +89,9 @@ def product_detail(
             "price_in_usd": _calc_product_cost(
                 product=product, currency_rate=currency_rate
             ),
-            "price_in_uzs": _calc_product_cost(product=product, in_uzs=True),
+            "price_in_uzs": _calc_product_cost(
+                product=product, in_uzs=True, currency_rate=currency_rate
+            ),
             "has_discount": product.discount > 0,
             "discount_persentage": product.discount,
             "price_with_discount_in_usd": _calc_product_cost_with_disc(
