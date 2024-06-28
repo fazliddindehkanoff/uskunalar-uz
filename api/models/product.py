@@ -10,6 +10,7 @@ from .constants import (
     AVAILABILITY_STATUS_CHOISES,
     COOPERATIONAL_STATUS_CHOICES,
     ORDER_STATUS_CHOISES,
+    CONTENT_TYPE_CHOISES,
 )
 
 
@@ -76,6 +77,10 @@ class Product(BaseModel, TranslatableModel):
     )
     created_by = models.ForeignKey(
         "CustomUser", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    description_type = models.IntegerField(
+        choices=CONTENT_TYPE_CHOISES,
+        default=1,
     )
 
     @classmethod

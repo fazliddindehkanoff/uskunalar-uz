@@ -35,8 +35,6 @@ from .models import (
     Video,
 )
 
-# admin.site.unregister(Group)
-
 
 @admin.register(Work)
 class WorkAdmin(ModelAdmin):
