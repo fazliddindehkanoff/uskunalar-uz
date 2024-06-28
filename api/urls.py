@@ -39,7 +39,7 @@ urlpatterns = [
     path("videos/", VideoListAPIView.as_view()),
     path("videos/<int:pk>/", VideoDetailApiView.as_view()),
     path("products/", ProductListAPIView.as_view()),
-    path("products/<int:pk>/", ProductDetailAPIView.as_view()),
+    path("products/<str:pk>/", ProductDetailAPIView.as_view()),
     path("works/", WorkListAPIView.as_view()),
     path("works/<int:pk>/", WorkDetailAPIView.as_view()),
 ]
