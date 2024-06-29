@@ -1,7 +1,11 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .selectors import list_categories, list_subcategories, list_line_categories
+from .selectors import (
+    list_categories,
+    list_subcategories,
+    list_line_categories,
+)
 
 
 class CategoryListApiView(APIView):

@@ -21,3 +21,9 @@ from .categories import (  # noqa
 from .products import ProductDetailAPIView, ProductListAPIView  # noqa
 from .partners import PartnersLogoListAPIView  # noqa
 from .works import WorkDetailAPIView, WorkListAPIView  # noqa
+from .sitemaps import (  # noqa
+    LineSitemapApiView,
+    ProductSitemapApiView,
+    VideoSitemapApiView,
+    WorkSitemapApiView,
+)

@@ -4,6 +4,7 @@ import random
 import requests
 
 from pathlib import Path
+from django.db.models import Model
 from eskiz_sms import EskizSMS
 
 env = environ.Env()
@@ -29,7 +30,7 @@ def get_currency_rate():
         data = response.json()
         return int(float(data[23]["nbu_buy_price"]))
     else:
-        print(f"Failed to retrieve the page. Status code: {response.status_code}")
+        print(f"Failed to retrieve the page. {response.status_code}")
 
 
 def paginate_queryset(queryset, page, page_size):
@@ -38,3 +39,11 @@ def paginate_queryset(queryset, page, page_size):
     end = start + page_size
     queryset = queryset[start:end]
     return total_count, queryset
+
+
+def get_list_of_object_ids(Object: Model, **filters) -> list:
+    object_ids = []
+    for object in Object.objects.filter(**filters):
+        object_ids.append({"pk": object.pk})
+
+    return object_ids
