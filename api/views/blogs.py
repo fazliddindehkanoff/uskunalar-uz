@@ -136,4 +136,4 @@ class VideoDetailApiView(APIView):
 
     def get(self, request, pk):
         lang_code = request.META.get("HTTP_ACCEPT_LANGUAGE")
-        return video_detail(lang_code=lang_code, video_id=pk)
+        return Response(video_detail(lang_code=lang_code, video_id=pk))

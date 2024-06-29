@@ -7,6 +7,9 @@ from .docs import work_detail_responses, list_works_responses
 
 
 class WorkListAPIView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
     @swagger_auto_schema(responses=list_works_responses)
     def get(self, request):
         order_by = request.query_params.get("order_by")
@@ -29,9 +32,16 @@ class WorkListAPIView(APIView):
 
 
 class WorkDetailAPIView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
     @swagger_auto_schema(responses=work_detail_responses)
     def get(self, request, pk):
         lang_code = request.META.get("HTTP_ACCEPT_LANGUAGE")
 
-        work_data = work_detail(lang_code=lang_code, work_id=pk, request=request)
+        work_data = work_detail(
+            lang_code=lang_code,
+            work_id=pk,
+            request=request,
+        )
         return Response(work_data)

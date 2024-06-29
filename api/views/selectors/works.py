@@ -43,7 +43,11 @@ def list_works(
     total_count, queryset = paginate_queryset(queryset, page, page_size)
 
     # Formatting the result
-    works_data = get_works_list(queryset=queryset, lang_code=lang_code, request=request)
+    works_data = get_works_list(
+        queryset=queryset,
+        lang_code=lang_code,
+        request=request,
+    )
 
     return {
         "works": works_data,
@@ -61,8 +65,14 @@ def work_detail(lang_code: str, work_id: int, request) -> dict:
     return {
         "id": work.pk,
         "title": work.get_translated_field("title", lang_code),
-        "short_description": work.get_translated_field("short_description", lang_code),
-        "long_description": work.get_translated_field("long_description", lang_code),
+        "short_description": work.get_translated_field(
+            "short_description",
+            lang_code,
+        ),
+        "long_description": work.get_translated_field(
+            "long_description",
+            lang_code,
+        ),
         "image_url": request.build_absolute_uri(work.image.url),
         "view_count": work.view_count,
     }
