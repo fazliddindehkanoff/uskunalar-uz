@@ -2,9 +2,7 @@ from django.contrib import admin
 from django.db import models
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
-from django.templatetags.static import static
 
-from googletrans import Translator
 from adminsortable2.admin import SortableAdminMixin
 from unfold.contrib.forms.widgets import WysiwygWidget
 from unfold.admin import ModelAdmin, TabularInline
@@ -15,7 +13,6 @@ from unfold.forms import (
 )
 from unfold.decorators import display
 
-from .models.constants import EDITOR_LANG_CHOICES
 from .models import (
     Blog,
     CustomUser,
@@ -127,13 +124,13 @@ class SupplierAdmin(ModelAdmin):
 
 
 @admin.register(Category)
-class CategoryAdmin(ModelAdmin):
-    list_display = ("title_uz", "title_en", "title_ru")
+class CategoryAdmin(SortableAdminMixin, ModelAdmin):
+    list_display = ("id", "title_uz", "order")
 
 
 @admin.register(SubCategory)
 class SubCategoryAdmin(ModelAdmin):
-    list_display = ("title_uz", "title_en", "title_ru")
+    list_display = ("id", "category", "title_uz")
 
 
 @admin.register(ProductFeature)
@@ -168,8 +165,7 @@ class ProductImageInlineAdmin(TabularInline):
 
 
 @admin.register(Product)
-class ProductAdmin(ModelAdmin, SortableAdminMixin):
-    # change_form_template = "admin/product_change_form.html"
+class ProductAdmin(ModelAdmin):
     search_fields = ["pk", "name_uz", "name_en", "name_ru"]
     autocomplete_fields = [
         "related_products",
@@ -196,10 +192,11 @@ class ProductAdmin(ModelAdmin, SortableAdminMixin):
             user_language_suffix = f"_{request.user.get_language_display()}"
             obj = obj if obj else Product
             for field in obj.translated_fields:
+                if field.endswith(user_language_suffix):
+                    continue
+
                 for lang_suffix in excluded_languages:
-                    if field.endswith(lang_suffix) and not field.endswith(
-                        user_language_suffix
-                    ):
+                    if field.endswith(lang_suffix):
                         additional_fields_to_exclude.append(field)
             excluded_fields.extend(additional_fields_to_exclude)
 
@@ -213,33 +210,6 @@ class ProductAdmin(ModelAdmin, SortableAdminMixin):
             obj.category_id = request.user.category.id
             obj.subcategory_id = request.user.subcategory.pk
 
-        if request.user.role == "EDITOR":
-            user_language = request.user.language
-            translator = Translator()
-            for field in obj._meta.fields:
-                if field.name != "id":
-                    field_name = str(field.name)
-                    for lang_code, lang_name in EDITOR_LANG_CHOICES:
-                        condition = (
-                            lang_code != user_language
-                            and field_name.endswith(lang_name),
-                        )
-                        if condition:
-                            try:
-                                translated_value = translator.translate(
-                                    getattr(
-                                        obj,
-                                        field_name[:-2]
-                                        + request.user.get_language_display(),
-                                    ),
-                                    src=request.user.get_language_display(),
-                                    dest=lang_name,
-                                ).text
-                            except Exception:
-                                translated_value = "Error occured translation"
-                            setattr(obj, field.name, translated_value)
-
-        # Call the parent save_model method to save the object
         super().save_model(request, obj, form, change)
 
     list_display = (

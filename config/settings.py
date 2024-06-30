@@ -39,11 +39,18 @@ INSTALLED_APPS = [
     "mdeditor",
     "drf_yasg",
     "ckeditor",
+    "ckeditor_uploader",
+    "adminsortable2",
     "django_ckeditor_5",
     # local apps
     "api",
 ]
-
+CKEDITOR_UPLOAD_PATH = "media/"
+CKEDITOR_CONFIGS = {
+    "default": {
+        "toolbar": "full",
+    },
+}
 X_FRAME_OPTIONS = "SAMEORIGIN"
 
 MIDDLEWARE = [

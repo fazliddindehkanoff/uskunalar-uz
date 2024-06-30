@@ -10,10 +10,12 @@ class Category(TranslatableModel, BaseModel):
     )
     icon = models.FileField()
     available = models.BooleanField(default=True)
+    order = models.IntegerField()
 
     class Meta:
         verbose_name = "Category"
         verbose_name_plural = "Categories"
+        ordering = ["order"]
 
     def __str__(self) -> str:
         return self.title_uz

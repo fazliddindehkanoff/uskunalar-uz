@@ -14,11 +14,6 @@ ORDER_STATUS_CHOISES = [
     (3, "Finished"),
 ]
 
-CONTENT_TYPE_CHOISES = [
-    (1, "HTML"),
-    (2, "Markdown"),
-]
-
 EDITOR_LANG_CHOICES = [
     (1, "uz"),
     (2, "en"),

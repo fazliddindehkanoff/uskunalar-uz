@@ -2,7 +2,8 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from googletrans import Translator
 
-from api.models.product import ProductFeature
+from api.models import Category, ProductFeature
+from api.utils import set_product_status, set_sub_category_status
 
 
 @receiver(pre_save, sender=ProductFeature)
@@ -28,3 +29,21 @@ def translate_blank_fields(sender, instance, **kwargs):
                         setattr(instance, field_name, translated_value)
             except Exception:
                 pass
+
+
+@receiver(pre_save, sender=Category)
+def check_category_availability(sender, instance, **kwargs):
+    if instance.pk:
+        try:
+            current_instance = sender.objects.get(pk=instance.pk)
+            if current_instance.available and not instance.available:
+                set_sub_category_status(category_id=instance.pk, status=False)
+                set_product_status(category_id=instance.pk, status=False)
+
+            if not current_instance.available and instance.available:
+                set_sub_category_status(category_id=instance.pk, status=True)
+                set_product_status(category_id=instance.pk, status=True)
+
+        except sender.DoesNotExist:
+            # The instance is new
+            pass

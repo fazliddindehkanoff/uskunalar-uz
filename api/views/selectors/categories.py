@@ -9,8 +9,10 @@ def list_categories(lang_code, request):
     categories_data = cache.get(cache_key)
 
     if not categories_data:
-        categories = Category.objects.filter(available=True).prefetch_related(
-            "category_products_set"
+        categories = (
+            Category.objects.filter(available=True)
+            .prefetch_related("category_products_set")
+            .order_by("order")
         )
 
         categories_data = [

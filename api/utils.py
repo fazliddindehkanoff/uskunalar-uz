@@ -7,6 +7,8 @@ from pathlib import Path
 from django.db.models import Model
 from eskiz_sms import EskizSMS
 
+from api.models import SubCategory, Product
+
 env = environ.Env()
 BASE_DIR = Path(__file__).resolve().parent.parent
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
@@ -47,3 +49,17 @@ def get_list_of_object_ids(Object: Model, **filters) -> list:
         object_ids.append({"pk": object.pk})
 
     return object_ids
+
+
+def set_sub_category_status(category_id: int, status: bool) -> None:
+    for subcategory in SubCategory.objects.filter(
+        category_id=category_id,
+    ):
+        subcategory.available = status
+        subcategory.save()
+
+
+def set_product_status(category_id: int, status: bool) -> None:
+    for product in Product.objects.filter(category_id=category_id):
+        product.approved = status
+        product.save()
