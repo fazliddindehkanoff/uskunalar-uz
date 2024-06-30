@@ -131,7 +131,7 @@ def save_lines():
 
 
 def save_products():
-    for i in range(1, 1325):
+    for i in range(162, 1325):
         url = f"https://api.uskunalar.uz/en/api-auth/products/{i}"
         response = requests.get(url)
         if response.status_code == 200:

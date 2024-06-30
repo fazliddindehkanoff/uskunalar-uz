@@ -31,7 +31,8 @@ class Product(BaseModel, TranslatableModel):
     translations = TranslatedFields(
         name=models.CharField(max_length=250, verbose_name="Name", blank=True),
         short_description=models.TextField(
-            default="", verbose_name="short description"
+            null=True,
+            verbose_name="short description",
         ),
         description=RichTextField(
             verbose_name="Description",
