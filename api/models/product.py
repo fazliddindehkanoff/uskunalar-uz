@@ -102,8 +102,16 @@ class Product(BaseModel, TranslatableModel):
 
 class ProductFeature(TranslatableModel, BaseModel):
     translations = TranslatedFields(
-        title=models.CharField(max_length=250, verbose_name="Title"),
-        value=models.CharField(max_length=250, verbose_name="Value"),
+        title=models.CharField(
+            max_length=250,
+            verbose_name="Title",
+            null=True,
+        ),
+        value=models.CharField(
+            max_length=250,
+            verbose_name="Value",
+            null=True,
+        ),
     )
     product = models.ForeignKey(
         "Product",

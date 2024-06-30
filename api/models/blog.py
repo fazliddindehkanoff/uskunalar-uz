@@ -17,8 +17,15 @@ class Blog(TranslatableModel, BaseModel):
 
 class Video(TranslatableModel, BaseModel):
     translations = TranslatedFields(
-        title=models.CharField(max_length=250, verbose_name="Title"),
-        description=RichTextField(verbose_name="description"),
+        title=models.CharField(
+            max_length=250,
+            verbose_name="Title",
+            null=True,
+        ),
+        description=RichTextField(
+            verbose_name="description",
+            null=True,
+        ),
     )
     video_link = models.CharField(max_length=250)
 
@@ -26,8 +33,14 @@ class Video(TranslatableModel, BaseModel):
 class Line(TranslatableModel, BaseModel):
     translations = TranslatedFields(
         title=models.CharField(max_length=250, verbose_name="Title"),
-        short_description=models.TextField(verbose_name="Short description"),
-        long_description=RichTextField(verbose_name="Description"),
+        short_description=models.TextField(
+            verbose_name="Short description",
+            null=True,
+        ),
+        long_description=RichTextField(
+            verbose_name="Description",
+            null=True,
+        ),
     )
     price = models.IntegerField()
     category = models.ForeignKey(
@@ -43,8 +56,12 @@ class Work(TranslatableModel, BaseModel):
         title=models.CharField(max_length=250, verbose_name="Title"),
         short_description=RichTextField(
             verbose_name="Short description",
+            null=True,
         ),
-        long_description=RichTextField(verbose_name="Description"),
+        long_description=RichTextField(
+            verbose_name="Description",
+            null=True,
+        ),
     )
     image = models.ImageField()
     view_count = models.IntegerField()

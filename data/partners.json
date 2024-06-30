@@ -1,0 +1,22 @@
+[
+  {
+    "id": 7,
+    "image": "https://api.uskunalar.uz/media/client_images/byd.png",
+    "created_at": "2022-08-25T15:04:19.589000+05:00"
+  },
+  {
+    "id": 6,
+    "image": "https://api.uskunalar.uz/media/client_images/image_prev_ui_4.png",
+    "created_at": "2022-08-25T12:53:18.876000+05:00"
+  },
+  {
+    "id": 4,
+    "image": "https://api.uskunalar.uz/media/client_images/zicar.png",
+    "created_at": "2022-08-24T16:53:54.202000+05:00"
+  },
+  {
+    "id": 3,
+    "image": "https://api.uskunalar.uz/media/client_images/Alibaba-Emblem.png",
+    "created_at": "2022-08-24T13:56:59.247000+05:00"
+  }
+]

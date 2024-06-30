@@ -1,0 +1,81 @@
+{
+    "sku": 995,
+    "category": {
+        "id": 22,
+        "category": "Metal processing",
+        "category_uz": "Metalni qayta ishlash sanoati",
+        "category_ru": "Обработки металла",
+        "category_en": "Metal processing",
+        "image": "https://api.uskunalar.uz/media/category_image/metal_icon_ZQO6KdN.svg",
+        "my_order": 17,
+        "created_at": "2022-04-28T16:41:10.726000+05:00"
+    },
+    "subcategory": {
+        "id": 752,
+        "image": null,
+        "subcategory": "Equipment for forming patterns by bending metal",
+        "subcategory_uz": "Metallni bukish orqali naqsh hosil qilish uskunalari",
+        "subcategory_ru": "Оборудование для формирования узоров гибкой металла",
+        "subcategory_en": "Equipment for forming patterns by bending metal",
+        "my_order": 681,
+        "created_at": "2024-01-18T15:25:42.189964+05:00",
+        "category": 22,
+        "category_uz": 22,
+        "category_ru": null,
+        "category_en": null
+    },
+    "background": {
+        "color": "Sariq",
+        "image": "https://api.uskunalar.uz/media/banner_back/yellow.svg"
+    },
+    "specifications": [
+        {
+            "id": 5816,
+            "product_customer": "Model",
+            "product_customer_uz": "Model",
+            "product_customer_ru": "Модель",
+            "product_customer_en": "Model",
+            "product_number": "US-AB-DN25D",
+            "product_number_uz": "US-AB-DN25D",
+            "product_number_ru": "US-AB-DN25D",
+            "product_number_en": "US-AB-DN25D",
+            "product_image": null
+        },
+        {
+            "id": 5817,
+            "product_customer": "Power",
+            "product_customer_uz": "Quvvati",
+            "product_customer_ru": "Мощность",
+            "product_customer_en": "Power",
+            "product_number": "4 kW",
+            "product_number_uz": "4 kW",
+            "product_number_ru": "4 кВт",
+            "product_number_en": "4 kW",
+            "product_image": null
+        },
+        {
+            "id": 5818,
+            "product_customer": "Dimension",
+            "product_customer_uz": "O'lchami",
+            "product_customer_ru": "Размер",
+            "product_customer_en": "Dimension",
+            "product_number": "1500*700*1400 mm",
+            "product_number_uz": "1500*700*1400 mm",
+            "product_number_ru": "1500*700*1400 мм",
+            "product_number_en": "1500*700*1400 mm",
+            "product_image": null
+        },
+        {
+            "id": 5819,
+            "product_customer": "Weight",
+            "product_customer_uz": "Vazni",
+            "product_customer_ru": "Общий вес",
+            "product_customer_en": "Weight",
+            "product_number": "550 kg",
+            "product_number_uz": "550 kg",
+            "product_number_ru": "550 кг",
+            "product_number_en": "550 kg",
+            "product_image": null
+        }
+    ]
+}

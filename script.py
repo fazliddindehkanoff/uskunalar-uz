@@ -1,64 +1,234 @@
-from bs4 import BeautifulSoup
-import markdownify as md
+import json
+import os
+import requests
 
-from api.models import Product
-
-
-def handle_images(soup):
-    """
-    Convert <img> tags into Markdown image format.
-    """
-    for img in soup.find_all("img"):
-        alt_text = img.get("alt", "")
-        src = img.get("src", "")
-        markdown_image = f"![{alt_text}]({src})"
-        img.replace_with(markdown_image)
-
-
-def parse_table(table):
-    """
-    Convert an HTML table to Markdown format while preserving the structure.
-    """
-    md_table = []
-    rows = table.find_all("tr")
-
-    # Process rows
-    for row in rows:
-        cols = row.find_all(["td", "th"])
-        md_row = " | ".join(cell.get_text(" ", strip=True) for cell in cols)
-        md_table.append(md_row)
-
-    # If the table has data, add Markdown header style
-    if md_table:
-        # Add header separator if first row is a header
-        header_cols_count = len(md_table[0].split(" | "))
-        md_table.insert(1, " | ".join(["---"] * header_cols_count))
-
-    return "\n".join(md_table)
+from django.conf import settings
+from api.models import (
+    Banner,
+    Category,
+    PartnerLogos,
+    LineCategory,
+    Line,
+    SubCategory,
+    Product,
+    ProductImage,
+    ProductFeature,
+    Video,
+    Work,
+)
 
 
-def html_to_markdown(html_content):
-    # Parse the HTML content using BeautifulSoup
-    soup = BeautifulSoup(html_content, "html.parser")
+def save_banner():
+    with open("data/banners.json", "r") as file:
+        banner_data = json.load(file)
 
-    # Handle images
-    handle_images(soup)
-
-    # Handle tables manually
-    for table in soup.find_all("table"):
-        markdown_table = parse_table(table)
-        table.replace_with(markdown_table)
-
-    # Convert the remaining HTML content to Markdown format
-    markdown_content = md.markdownify(str(soup), heading_style="ATX")
-
-    return markdown_content
+    for data in banner_data:
+        Banner.objects.get_or_create(
+            id=data["id"],
+            banner_image_uz=download_image(data["banner_image_uz"]),
+            banner_image_ru=download_image(data["banner_image_ru"]),
+            banner_image_en=download_image(data["banner_image_en"]),
+            product_url=data["link"],
+            created_at=data["created_at"],
+        )
 
 
-def convert_html_to_markdown():
-    products = Product.objects.all()
-    for product in products:
-        product.description_uz = html_to_markdown(product.description_uz)
-        product.description_ru = html_to_markdown(product.description_ru)
-        product.description_en = html_to_markdown(product.description_en)
-        product.save()
+def download_image(url):
+    try:
+        response = requests.get(url, stream=True)
+        filename = url.split("/")[-1]
+        if response.status_code == 200:
+            filepath = os.path.join(settings.MEDIA_ROOT, filename)
+
+            with open(filepath, "wb") as out_file:
+                out_file.write(response.content)
+
+        return filename
+    except Exception:
+        return None
+
+
+def save_categories():
+    with open("data/sub-categorys.json", "r") as file:
+        category_data = json.load(file)
+
+    for data in category_data:
+        category = data["category"]
+        if category:
+            try:
+                Category.objects.create(
+                    id=category["id"],
+                    title_uz=category["category_uz"],
+                    title_en=category["category_en"],
+                    title_ru=category["category_ru"],
+                    order=category["my_order"],
+                    icon=download_image(category["image"]),
+                    created_at=category["created_at"],
+                )
+            except Exception:
+                pass
+
+        SubCategory.objects.create(
+            id=data["id"],
+            title_uz=data["subcategory_uz"],
+            title_en=data["subcategory_en"],
+            title_ru=data["subcategory_ru"],
+            category_id=category["id"],
+            icon=download_image(data["image"]),
+            created_at=data["created_at"],
+        )
+
+
+def save_partners():
+    with open("data/partners.json", "r") as file:
+        partner_data = json.load(file)
+
+    for data in partner_data:
+        PartnerLogos.objects.create(
+            id=data["id"],
+            image=download_image(data["image"]),
+            created_at=data["created_at"],
+        )
+
+
+def save_line_categories():
+    with open("data/lines-category.json", "r") as file:
+        line_category_data = json.load(file)
+
+    for data in line_category_data:
+        LineCategory.objects.create(
+            id=data["id"],
+            title_uz=data["category_uz"],
+            title_en=data["category_en"],
+            title_ru=data["category_ru"],
+            created_at=data["created_at"],
+        )
+
+
+def save_lines():
+    with open("data/lines.json", "r") as file:
+        line_data = json.load(file)
+
+    for data in line_data:
+        Line.objects.create(
+            id=data["id"],
+            title_uz=data["title_uz"],
+            title_en=data["title_en"],
+            title_ru=data["title_ru"],
+            category_id=data["category"]["id"],
+            short_description_uz=data["description_uz"],
+            short_description_en=data["description_en"],
+            short_description_ru=data["description_ru"],
+            long_description_en=data["long_description_en"],
+            long_description_uz=data["long_description_uz"],
+            long_description_ru=data["long_description_ru"],
+            price=data["price"],
+            view_count=data["views"],
+            image=download_image(data["image"]),
+            banner=download_image(data["banner"]),
+            created_at=data["created_at"],
+        )
+
+
+def save_products():
+    for i in range(1, 1325):
+        url = f"https://api.uskunalar.uz/en/api-auth/products/{i}"
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+
+            if data["DAF"]:
+                cip_type = 1
+            elif data["EXW"]:
+                cip_type = 2
+            else:
+                cip_type = 3
+
+            product = Product.objects.create(
+                id=data["sku"],
+                name_uz=data["title_uz"],
+                name_en=data["title_en"],
+                name_ru=data["title_ru"],
+                short_description_uz=data["short_description_uz"],
+                short_description_ru=data["short_description_ru"],
+                short_description_en=data["short_description_en"],
+                description_uz=data["long_description_uz"],
+                description_en=data["long_description_en"],
+                description_ru=data["long_description_ru"],
+                view_count=data["view_count"],
+                created_at=data["created_at"],
+                price=data["price"],
+                availability_status=1 if data["delivery"] == "Buyurtma orqali" else 2,
+                discount=data["discount"],
+                category_id=data["category"]["id"],
+                subcategory_id=data["subcategory"]["id"],
+                cip_type=cip_type,
+            )
+            for image in data["images"]:
+                ProductImage.objects.create(
+                    id=image["id"],
+                    product=product,
+                    image=download_image(image["image"]),
+                )
+            for product_feat in data["specifications"]:
+                ProductFeature.objects.create(
+                    id=product_feat["id"],
+                    title_uz=product_feat["product_customer_uz"],
+                    title_en=product_feat["product_customer_en"],
+                    title_ru=product_feat["product_customer_ru"],
+                    value_uz=product_feat["product_number_uz"],
+                    value_en=product_feat["product_number_en"],
+                    value_ru=product_feat["product_number_ru"],
+                )
+        print(f"Product: {i} has been saved")
+
+
+def save_work():
+    with open("data/works.json", "r") as file:
+        work_data = json.load(file)
+
+    for data in work_data:
+        Work.objects.create(
+            id=data["id"],
+            title_uz=data["title_uz"],
+            title_ru=data["title_ru"],
+            title_en=data["title_en"],
+            short_description_uz=data["short_descriptions_uz"],
+            short_description_ru=data["short_descriptions_ru"],
+            short_description_en=data["short_descriptions_en"],
+            long_description_uz=data["descriptions_uz"],
+            long_description_ru=data["descriptions_ru"],
+            long_description_en=data["descriptions_en"],
+            view_count=data["views"],
+            created_at=data["created_at"],
+            image=download_image(data["image"]),
+        )
+
+
+def save_videos():
+    with open("data/videos.json", "r") as file:
+        video_data = json.load(file)
+
+    for data in video_data:
+        Video.objects.create(
+            id=data["id"],
+            title_uz=data["title_uz"],
+            title_ru=data["title_ru"],
+            title_en=data["title_en"],
+            description_uz=data["descriptions_uz"],
+            description_ru=data["descriptions_ru"],
+            description_en=data["descriptions_en"],
+            video_linke=data["url"],
+            created_at=data["created_at"],
+        )
+
+
+def main():
+    save_banner()
+    save_categories()
+    save_line_categories()
+    save_lines()
+    save_partners()
+    save_videos()
+    save_work()
+    save_products()
