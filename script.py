@@ -215,20 +215,15 @@ def save_videos():
             title_uz=data["title_uz"],
             title_ru=data["title_ru"],
             title_en=data["title_en"],
-            description_uz=data["descriptions_uz"],
-            description_ru=data["descriptions_ru"],
-            description_en=data["descriptions_en"],
+            description_uz=data["description_uz"],
+            description_ru=data["description_ru"],
+            description_en=data["description_en"],
             video_linke=data["url"],
             created_at=data["created_at"],
         )
 
 
 def main():
-    save_banner()
-    save_categories()
-    save_line_categories()
-    save_lines()
-    save_partners()
     save_videos()
     save_work()
     save_products()
