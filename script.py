@@ -68,15 +68,18 @@ def save_categories():
             except Exception:
                 pass
 
-        SubCategory.objects.create(
-            id=data["id"],
-            title_uz=data["subcategory_uz"],
-            title_en=data["subcategory_en"],
-            title_ru=data["subcategory_ru"],
-            category_id=category["id"],
-            icon=download_image(data["image"]),
-            created_at=data["created_at"],
-        )
+        try:
+            SubCategory.objects.create(
+                id=data["id"],
+                title_uz=data["subcategory_uz"],
+                title_en=data["subcategory_en"],
+                title_ru=data["subcategory_ru"],
+                category_id=category["id"],
+                icon=download_image(data["image"]),
+                created_at=data["created_at"],
+            )
+        except Exception:
+            pass
 
 
 def save_partners():
