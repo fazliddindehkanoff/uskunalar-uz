@@ -218,7 +218,7 @@ def save_videos():
             description_uz=data["description_uz"],
             description_ru=data["description_ru"],
             description_en=data["description_en"],
-            video_linke=data["url"],
+            video_link=data["url"],
             created_at=data["created_at"],
         )
 
