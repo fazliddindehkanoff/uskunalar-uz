@@ -176,6 +176,7 @@ def save_products():
             for product_feat in data["specifications"]:
                 ProductFeature.objects.create(
                     id=product_feat["id"],
+                    product=product,
                     title_uz=product_feat["product_customer_uz"],
                     title_en=product_feat["product_customer_en"],
                     title_ru=product_feat["product_customer_ru"],
@@ -227,5 +228,11 @@ def save_videos():
 
 
 def main():
-    save_categories()
+    # save_banner()
+    # save_categories()
+    # save_partners()
+    # save_line_categories()
+    # save_lines()
+    # save_work()
+    # save_videos()
     save_products()
