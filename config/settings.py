@@ -49,6 +49,11 @@ CKEDITOR_UPLOAD_PATH = "media/"
 CKEDITOR_CONFIGS = {
     "default": {
         "toolbar": "full",
+        "notification": {
+            "ignoreNoScriptWarning": True,
+            "ignoreEmptyParagraph": True,
+            "ignoreVersion": True,
+        },
     },
 }
 X_FRAME_OPTIONS = "SAMEORIGIN"
@@ -203,20 +208,6 @@ SIMPLE_JWT = {
 }
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
-
-CKEDITOR_CONFIGS = {
-    "default": {
-        "removePlugins": "scayt,wsc,easyimage",
-        "disableNativeSpellChecker": False,
-        "removeDialogTabs": "image:advanced;link:advanced",
-        "allowedContent": True,
-        "notification": {
-            "ignoreNoScriptWarning": True,
-            "ignoreEmptyParagraph": True,
-            "ignoreVersion": True,
-        },
-    }
-}
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
