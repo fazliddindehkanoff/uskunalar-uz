@@ -45,15 +45,12 @@ INSTALLED_APPS = [
     # local apps
     "api",
 ]
+
 CKEDITOR_UPLOAD_PATH = "media/"
 CKEDITOR_CONFIGS = {
     "default": {
         "toolbar": "full",
-        "notification": {
-            "ignoreNoScriptWarning": True,
-            "ignoreEmptyParagraph": True,
-            "ignoreVersion": True,
-        },
+        "versionCheck": False,
     },
 }
 X_FRAME_OPTIONS = "SAMEORIGIN"

@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from rest_framework.exceptions import NotFound
 from django.utils import timezone
+from django.db.models import Q
 from django.core.cache import cache
 
 from api.models import Product
@@ -181,7 +182,12 @@ def list_products(
     queryset = Product.objects.filter(approved=True)
 
     if search_query:
-        queryset = queryset.filter(name__icontains=search_query)
+        queryset = queryset.filter(
+            Q(name_uz__icontains=search_query)
+            | Q(name_ru__icontains=search_query)
+            | Q(name_en__icontains=search_query)
+            | Q(tags__icontains=search_query)
+        )
 
     if category_id != 0:
         queryset = queryset.filter(category_id=category_id)
