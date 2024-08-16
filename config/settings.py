@@ -174,7 +174,9 @@ UNFOLD = {
                         "title": _("Users"),
                         "icon": "people",
                         "link": reverse_lazy("admin:api_customuser_changelist"),
-                        "permission": lambda request: request.user.is_superuser,
+                        "permission": lambda request: request.user.has_perm(
+                            "users.view_staffuser"
+                        ),
                     },
                     {
                         "title": _("Products"),
