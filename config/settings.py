@@ -168,7 +168,7 @@ UNFOLD = {
                         "title": _("Dashboard"),
                         "icon": "dashboard",
                         "link": reverse_lazy("admin:index"),
-                        "permission": lambda request: request.user.is_superuser,
+                        "permission": lambda request: request.user.role == "ADMIN",
                     },
                     {
                         "title": _("Users"),
