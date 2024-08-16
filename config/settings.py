@@ -180,7 +180,8 @@ UNFOLD = {
                         "title": _("Products"),
                         "icon": "box",
                         "link": reverse_lazy("admin:api_product_changelist"),
-                        # "permission": lambda request: request.user.role == "EDITOR",
+                        "permission": lambda request: request.user.role
+                        in ["ADMIN", "EDITOR"],
                     },
                 ],
             },

@@ -186,6 +186,9 @@ def list_products(
             Q(name_uz__icontains=search_query)
             | Q(name_ru__icontains=search_query)
             | Q(name_en__icontains=search_query)
+            | Q(short_description_uz__icontains=search_query)
+            | Q(short_description_ru__icontains=search_query)
+            | Q(short_description_en__icontains=search_query)
             | Q(tags__icontains=search_query)
         )
 
