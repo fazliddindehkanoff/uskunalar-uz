@@ -168,20 +168,18 @@ UNFOLD = {
                         "title": _("Dashboard"),
                         "icon": "dashboard",
                         "link": reverse_lazy("admin:index"),
-                        "permission": lambda request: request.user.role == "ADMIN",
+                        "permission": lambda request: request.user.is_superuser,
                     },
                     {
                         "title": _("Users"),
                         "icon": "people",
                         "link": reverse_lazy("admin:api_customuser_changelist"),
-                        "permission": lambda request: request.user.role == "ADMIN",
+                        "permission": lambda request: request.user.is_superuser,
                     },
                     {
                         "title": _("Products"),
                         "icon": "box",
                         "link": reverse_lazy("admin:api_product_changelist"),
-                        "permission": lambda request: request.user.role
-                        in ["ADMIN", "EDITOR"],
                     },
                 ],
             },
