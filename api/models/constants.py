@@ -6,6 +6,15 @@ CIP_STATUS_CHOISES = [
     (1, "DAF"),
     (2, "EXW"),
     (3, "FCA"),
+    (4, "CPT"),
+    (5, "CIP"),
+    (6, "DAP"),
+    (7, "DPU"),
+    (8, "DDP"),
+    (9, "FAS"),
+    (10, "FOB"),
+    (11, "CFR"),
+    (12, "CIF"),
 ]
 
 ORDER_STATUS_CHOISES = [
