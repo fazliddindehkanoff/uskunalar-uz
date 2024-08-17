@@ -1,0 +1,100 @@
+{% extends 'unfold/layouts/base_simple.html' %}
+
+{% load i18n unfold %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block title %}
+{% trans 'Dashboard' %} | {{ site_title|default:_('Django site admin') }}
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+  <a href="{% url 'admin:index' %}">
+    {{ site_header }}
+  </a>
+</h1>
+{% endblock %}
+
+{% block extrahead %}
+
+{% if plausible_domain %}
+<script defer data-domain="{{ plausible_domain }}" src="https://plausible.io/js/script.js"></script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{% include "unfold/helpers/messages.html" %}
+
+{% component "unfold/components/container.html" %}
+
+{% component "unfold/components/flex.html" with class="gap-8 mb-8 flex-col lg:flex-row" %}
+{% for stats in kpi %}
+{% component "unfold/components/card.html" with class="relative" label=label footer=stats.footer %}
+    <div style="position: absolute; top: 1rem; right: 1rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-box">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+    </div>
+    {% component "unfold/components/text.html" %}
+        {{ stats.title }}
+    {% endcomponent %}
+    {% component "unfold/components/title.html" %}
+        {{ stats.metric }}
+    {% endcomponent %}
+{% endcomponent %}
+{% endfor %}
+{% endcomponent %}
+
+{% component "unfold/components/flex.html" with class="gap-8 mb-8 flex-col lg:flex-row" %}
+{% component "unfold/components/card.html" with class="relative p-8" title="Statistics" %}
+  
+  {% component "unfold/components/flex.html" with class="gap-8 flex-col lg:flex-row" %}
+    {% component "unfold/components/card.html" with class="relative w-full lg:w-1/2" title="New Products" %}
+      <table class="w-full table-auto border-collapse">
+        <thead>
+          <tr class="bg-gray-100 border-b">
+            <th class="text-left py-2 px-4">{{ _('Model') }}</th>
+            <th class="text-left py-2 px-4">{{ _('Count') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for model, count in model_counts %}
+          <tr class="border-b">
+            <td class="py-2 px-4">{{ model }}</td>
+            <td class="py-2 px-4">{{ count }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="flex justify-end mt-4">
+        <a href="{% url "admin:api_product_changelist" %}" class="text-blue-500">{{ _('Go to Products') }}</a>
+      </div>
+    {% endcomponent %}
+
+    {% component "unfold/components/card.html" with class="relative w-full lg:w-1/2" title="Unapproved Products" %}
+      <table class="w-full table-auto border-collapse">
+        <thead>
+          <tr class="bg-gray-100 border-b">
+            <th class="text-left py-2 px-4">{{ _('Model') }}</th>
+            <th class="text-left py-2 px-4">{{ _('Count') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for model, count in model_counts %}
+          <tr class="border-b">
+            <td class="py-2 px-4">{{ model }}</td>
+            <td class="py-2 px-4">{{ count }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endcomponent %}
+  {% endcomponent %}
+
+{% endcomponent %}
+{% endcomponent %}
+{% endcomponent %}
+{% endblock %}

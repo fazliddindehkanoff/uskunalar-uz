@@ -1,6 +1,8 @@
+from collections.abc import Sequence
 from django.contrib import admin
 from django.db import models
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
 from adminsortable2.admin import SortableAdminMixin
@@ -176,6 +178,8 @@ class ProductAdmin(ModelAdmin):
         qs = super().get_queryset(request)
         if request.user.role == "EDITOR":
             qs = qs.filter(created_by=request.user)
+        if request.user.is_superuser and request.GET.get("approved__exact") is None:
+            qs = qs.filter(approved=True)
         return qs
 
     def get_form(self, request, obj: Product = None, **kwargs):
@@ -212,12 +216,20 @@ class ProductAdmin(ModelAdmin):
 
         super().save_model(request, obj, form, change)
 
-    list_display = (
+    list_display = [
         "id",
         "name_uz",
         "category",
         "approved",
-    )
+    ]
+
+    def get_list_display(self, request: HttpRequest) -> Sequence[str]:
+        list_display = super().get_list_display(request)
+        if request.user.is_superuser and "created_by" not in list_display:
+            list_display.append("created_by")
+
+        return list_display
+
     inlines = [ProductFeatureInlineAdmin, ProductImageInlineAdmin]
 
 

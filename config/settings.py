@@ -156,6 +156,11 @@ UNFOLD = {
     "SITE_URL": "/",
     "SITE_ICON": lambda request: static("logo.png"),
     "SITE_SYMBOL": "speed",
+    "THEME": "light",
+    "STYLES": [
+        lambda request: static("css/styles.css"),
+    ],
+    "DASHBOARD_CALLBACK": "config.views.dashboard_callback",
     "SIDEBAR": {
         "show_search": True,
         "show_all_applications": True,
@@ -168,20 +173,118 @@ UNFOLD = {
                         "title": _("Dashboard"),
                         "icon": "dashboard",
                         "link": reverse_lazy("admin:index"),
-                        "permission": lambda request: request.user.role == "ADMIN",
+                        "permission": lambda request: request.user.is_superuser,
                     },
                     {
                         "title": _("Users"),
                         "icon": "people",
                         "link": reverse_lazy("admin:api_customuser_changelist"),
-                        "permission": lambda request: request.user.has_perm(
-                            "users.view_staffuser"
-                        ),
+                        "permission": lambda request: request.user.is_superuser,
                     },
                     {
                         "title": _("Products"),
                         "icon": "box",
-                        "link": reverse_lazy("admin:api_product_changelist"),
+                        "link": lambda request: reverse_lazy(
+                            "admin:api_product_changelist"
+                        ),
+                        "badge": "api.utils.get_number_of_products",
+                    },
+                    {
+                        "title": _("Unapproved Products"),
+                        "icon": "pending_actions",
+                        "link": lambda request: reverse_lazy(
+                            "admin:api_product_changelist"
+                        )
+                        + "?approved__exact=0",
+                        "badge": "api.utils.get_number_of_unapproved_products",
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                    {
+                        "title": _("Categories"),
+                        "icon": "category",
+                        "link": reverse_lazy("admin:api_category_changelist"),
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                    {
+                        "title": _("Subcategories"),
+                        "icon": "category",
+                        "link": reverse_lazy("admin:api_subcategory_changelist"),
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                    {
+                        "title": _("Suppliers"),
+                        "icon": "store",
+                        "link": reverse_lazy("admin:api_supplier_changelist"),
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                ],
+            },
+            {
+                "title": _("Blogs"),
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": _("Blog"),
+                        "icon": "article",
+                        "link": reverse_lazy("admin:api_blog_changelist"),
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                    {
+                        "title": _("Videos"),
+                        "icon": "video_library",
+                        "link": reverse_lazy("admin:api_video_changelist"),
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                    {
+                        "title": _("Works"),
+                        "icon": "work",
+                        "link": reverse_lazy("admin:api_work_changelist"),
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                ],
+            },
+            {
+                "title": _("Linyalar"),
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": _("Lines"),
+                        "icon": "list",
+                        "link": reverse_lazy("admin:api_line_changelist"),
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                    {
+                        "title": _("Line Categories"),
+                        "icon": "list",
+                        "link": reverse_lazy("admin:api_linecategory_changelist"),
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                ],
+            },
+            {
+                "title": _("Banners"),
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": _("Banners"),
+                        "icon": "image",
+                        "link": reverse_lazy("admin:api_banner_changelist"),
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                    {
+                        "title": _("Background Banners"),
+                        "icon": "image",
+                        "link": reverse_lazy("admin:api_backgroundbanner_changelist"),
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                    {
+                        "title": _("Partner Logos"),
+                        "icon": "image",
+                        "link": reverse_lazy("admin:api_partnerlogos_changelist"),
+                        "permission": lambda request: request.user.is_superuser,
                     },
                 ],
             },

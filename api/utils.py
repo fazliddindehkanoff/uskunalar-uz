@@ -63,3 +63,17 @@ def set_product_status(category_id: int, status: bool) -> None:
     for product in Product.objects.filter(category_id=category_id):
         product.approved = status
         product.save()
+
+
+def get_number_of_unapproved_products(request) -> int:
+    unapproved_products_count = Product.objects.filter(approved=False).count()
+    if unapproved_products_count > 0 and request.user.is_superuser:
+        return unapproved_products_count
+    return ""
+
+
+def get_number_of_products(request) -> int:
+    unapproved_products_count = Product.objects.filter(approved=True).count()
+    if unapproved_products_count > 0 and request.user.is_superuser:
+        return unapproved_products_count
+    return ""
