@@ -27,7 +27,7 @@
 {% include "unfold/helpers/messages.html" %}
 
 {% component "unfold/components/container.html" %}
-
+{% if user.is_superuser %}
 {% component "unfold/components/flex.html" with class="gap-8 mb-8 flex-col lg:flex-row" %}
 {% for stats in kpi %}
 {% component "unfold/components/card.html" with class="relative" label=label footer=stats.footer %}
@@ -56,15 +56,17 @@
       <table class="w-full table-auto border-collapse">
         <thead>
           <tr class="bg-gray-100 border-b">
-            <th class="text-left py-2 px-4">{{ _('Model') }}</th>
-            <th class="text-left py-2 px-4">{{ _('Count') }}</th>
+            <th class="text-left py-2 px-4">{{ _('ID') }}</th>
+            <th class="text-left py-2 px-4">{{ _('Title') }}</th>
+            <th class="text-left py-2 px-4">{{ _('View count') }}</th>
           </tr>
         </thead>
         <tbody>
-          {% for model, count in model_counts %}
+          {% for product in approved_products %}
           <tr class="border-b">
-            <td class="py-2 px-4">{{ model }}</td>
-            <td class="py-2 px-4">{{ count }}</td>
+            <td class="py-2 px-4"><a href="{% url 'admin:api_product_change' product.id %}">{{ product.id }}</a></td>
+            <td class="py-2 px-4">{{ product.name_uz }}</td>
+            <td class="py-2 px-4">{{ product.view_count }}</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -78,23 +80,32 @@
       <table class="w-full table-auto border-collapse">
         <thead>
           <tr class="bg-gray-100 border-b">
-            <th class="text-left py-2 px-4">{{ _('Model') }}</th>
-            <th class="text-left py-2 px-4">{{ _('Count') }}</th>
+            <th class="text-left py-2 px-4">{{ _('ID') }}</th>
+            <th class="text-left py-2 px-4">{{ _('Title') }}</th>
+            <th class="text-left py-2 px-4">{{ _('View count') }}</th>
           </tr>
         </thead>
         <tbody>
-          {% for model, count in model_counts %}
+          {% for product in unapproved_products %}
           <tr class="border-b">
-            <td class="py-2 px-4">{{ model }}</td>
-            <td class="py-2 px-4">{{ count }}</td>
+            <td class="py-2 px-4"><a href="{% url 'admin:api_product_change' product.id %}">{{ product.id }}</a></td>
+            <td class="py-2 px-4">{{ product.name_uz }}</td>
+            <td class="py-2 px-4">{{ product.view_count }}</td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
+      <div class="flex justify-end mt-4">
+        <a href="{% url "admin:api_unapprovedproduct_changelist" %}" class="text-blue-500">{{ _('Go to Unapproved Products') }}</a>
+      </div>
     {% endcomponent %}
   {% endcomponent %}
 
 {% endcomponent %}
 {% endcomponent %}
+
+{% else %}
+<h1>Welcome to the dashboard</h1>
+{% endif %}
 {% endcomponent %}
 {% endblock %}

@@ -25,6 +25,11 @@ class Supplier(TranslatableModel, BaseModel):
         choices=COOPERATIONAL_STATUS_CHOICES,
     )
 
+    def __str__(self) -> str:
+        return (
+            f"{self.company_name} - cooperational status: {self.cooperational_status}"
+        )
+
 
 class Product(BaseModel, TranslatableModel):
     approved = models.BooleanField(default=False)

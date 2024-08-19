@@ -35,6 +35,13 @@ from .models import (
 )
 
 
+class UnapprovedProduct(Product):
+    class Meta:
+        proxy = True
+        verbose_name = "Unapproved Product"
+        verbose_name_plural = "Unapproved Products"
+
+
 @admin.register(Work)
 class WorkAdmin(ModelAdmin):
     list_display = ("id", "title_uz")
@@ -176,10 +183,23 @@ class ProductAdmin(ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
+        if "change" in request.path and request.resolver_match.kwargs.get(
+            "object_id",
+        ):
+            return qs
+
         if request.user.role == "EDITOR":
             qs = qs.filter(created_by=request.user)
-        if request.user.is_superuser and request.GET.get("approved__exact") is None:
+
+        if (
+            request.user.is_superuser
+            and request.GET.get(
+                "approved__exact",
+            )
+            is None
+        ):
             qs = qs.filter(approved=True)
+
         return qs
 
     def get_form(self, request, obj: Product = None, **kwargs):
@@ -215,6 +235,35 @@ class ProductAdmin(ModelAdmin):
             obj.subcategory_id = request.user.subcategory.pk
 
         super().save_model(request, obj, form, change)
+
+    list_display = [
+        "id",
+        "name_uz",
+        "category",
+        "approved",
+    ]
+
+    def get_list_display(self, request: HttpRequest) -> Sequence[str]:
+        list_display = super().get_list_display(request)
+        if request.user.is_superuser and "created_by" not in list_display:
+            list_display.append("created_by")
+
+        return list_display
+
+    inlines = [ProductFeatureInlineAdmin, ProductImageInlineAdmin]
+
+
+@admin.register(UnapprovedProduct)
+class UnapprovedProductAdmin(ModelAdmin):
+    search_fields = ["pk", "name_uz", "name_en", "name_ru"]
+    autocomplete_fields = [
+        "related_products",
+    ]
+    exclude = ("created_by",)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request).filter(approved=False)
+        return qs
 
     list_display = [
         "id",

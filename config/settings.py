@@ -46,13 +46,22 @@ INSTALLED_APPS = [
     "api",
 ]
 
-CKEDITOR_UPLOAD_PATH = "media/"
+CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_CONFIGS = {
     "default": {
-        "toolbar": "full",
-        "versionCheck": False,
+        "toolbar": "full",  # Use the full toolbar configuration
+        "versionCheck": False,  # Disable version check
+        "extraPlugins": ",".join(
+            [
+                "uploadimage",  # Enable image uploading
+            ]
+        ),
+        # "removePlugins": "image",  # Remove default image plugin
+        "filebrowserUploadUrl": "/ckeditor/upload/",  # URL for file uploads
+        "filebrowserImageUploadUrl": "/ckeditor/upload/",
     },
 }
+
 X_FRAME_OPTIONS = "SAMEORIGIN"
 
 MIDDLEWARE = [
@@ -163,7 +172,7 @@ UNFOLD = {
     "DASHBOARD_CALLBACK": "config.views.dashboard_callback",
     "SIDEBAR": {
         "show_search": True,
-        "show_all_applications": True,
+        "show_all_applications": False,
         "navigation": [
             {
                 "title": _("Navigation"),
@@ -193,9 +202,8 @@ UNFOLD = {
                         "title": _("Unapproved Products"),
                         "icon": "pending_actions",
                         "link": lambda request: reverse_lazy(
-                            "admin:api_product_changelist"
-                        )
-                        + "?approved__exact=0",
+                            "admin:api_unapprovedproduct_changelist"
+                        ),
                         "badge": "api.utils.get_number_of_unapproved_products",
                         "permission": lambda request: request.user.is_superuser,
                     },
