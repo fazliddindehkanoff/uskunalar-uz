@@ -129,6 +129,7 @@ class BlogAdmin(ModelAdmin):
 
 @admin.register(Supplier)
 class SupplierAdmin(ModelAdmin):
+    search_fields = ["company_name"]
     list_display = ("company_name", "experience")
 
 
@@ -175,9 +176,15 @@ class ProductImageInlineAdmin(TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(ModelAdmin):
-    search_fields = ["pk", "name_uz", "name_en", "name_ru"]
+    search_fields = [
+        "pk",
+        "name_uz",
+        "name_en",
+        "name_ru",
+    ]
     autocomplete_fields = [
         "related_products",
+        "supplier",
     ]
     exclude = ("created_by",)
 
@@ -212,6 +219,8 @@ class ProductAdmin(ModelAdmin):
                 "subcategory",
                 "approved",
                 "view_count",
+                "supplier",
+                "background_image",
             ]
             user_language_suffix = f"_{request.user.get_language_display()}"
             obj = obj if obj else Product
