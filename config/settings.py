@@ -77,14 +77,14 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "config.urls"
 CSRF_TRUSTED_ORIGINS = [
-    "https://uskunalar.uz.fazliddindehkanoff.uz",
+    "https://admin.uskunalar.uz",
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://uskunalar.uz",
+    "https://www.uskunalar.uz",
 ]
 
 CORS_ALLOW_HEADERS = [
