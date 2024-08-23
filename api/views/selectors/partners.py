@@ -7,7 +7,9 @@ def list_partners_logo(request) -> list:
     for partner in PartnerLogos.objects.all():
         partners_list.append(
             {
-                "image": request.build_absolute_uri(partner.image.url),
+                "image": request.build_absolute_uri(partner.image.url).replace(
+                    "http://", "https://"
+                ),
             }
         )
 

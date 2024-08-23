@@ -102,14 +102,16 @@ def product_detail(
                 product=product, in_uzs=True, currency_rate=currency_rate
             ),
             "images": [
-                request.build_absolute_uri(image.image.url)
+                request.build_absolute_uri(image.image.url).replace(
+                    "http://", "https://"
+                )
                 for image in product.images.all()
             ],
             "background_image": (
                 request.build_absolute_uri(product.background_image.image.url)
                 if product.background_image
                 else ""
-            ),
+            ).replace("http://", "https://"),
             "specifications": [
                 {
                     "title": feature.get_translated_field("title", lang_code),
@@ -260,14 +262,16 @@ def get_products_list(
                 product=product, in_uzs=True, currency_rate=currency_rate
             ),
             "images": [
-                request.build_absolute_uri(image.image.url)
+                request.build_absolute_uri(image.image.url).replace(
+                    "http://", "https://"
+                )
                 for image in product.images.all()
             ],
             "background_image": (
                 request.build_absolute_uri(product.background_image.image.url)
                 if product.background_image
                 else ""
-            ),
+            ).replace("http://", "https://"),
             "cip_type": product.get_cip_type_display(),
             "availability_status_readable": product.get_availability_status_display(  # noqa
                 lang_code=lang_code

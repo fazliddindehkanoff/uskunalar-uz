@@ -12,7 +12,9 @@ def get_works_list(queryset, lang_code, request):
             "short_description": work.get_translated_field(
                 "short_description", lang_code
             ),
-            "image_url": request.build_absolute_uri(work.image.url),
+            "image_url": request.build_absolute_uri(work.image.url).replace(
+                "http://", "https://"
+            ),
             "view_count": work.view_count,
         }
         works_data.append(work_data)
@@ -73,6 +75,8 @@ def work_detail(lang_code: str, work_id: int, request) -> dict:
             "long_description",
             lang_code,
         ),
-        "image_url": request.build_absolute_uri(work.image.url),
+        "image_url": request.build_absolute_uri(work.image.url).replace(
+            "http://", "https://"
+        ),
         "view_count": work.view_count,
     }

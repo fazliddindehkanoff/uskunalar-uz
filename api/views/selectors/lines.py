@@ -46,8 +46,12 @@ def get_line_posts_list(queryset, lang_code, request):
         post_data = {
             "id": post.pk,
             "title": post.get_translated_field("title", lang_code),
-            "image_url": request.build_absolute_uri(post.image.url),
-            "banner_url": request.build_absolute_uri(post.banner.url),
+            "image_url": request.build_absolute_uri(post.image.url).replace(
+                "http://", "https://"
+            ),
+            "banner_url": request.build_absolute_uri(post.banner.url).replace(
+                "http://", "https://"
+            ),
             "category": post.category.get_translated_field("title", lang_code),
             "short_description": post.get_translated_field(
                 "short_description", lang_code
@@ -80,8 +84,12 @@ def line_post_detail(lang_code: str, line_post_id: int, request) -> dict:
             "long_description": line_post.get_translated_field(
                 "long_description", lang_code
             ),
-            "image_url": request.build_absolute_uri(line_post.image.url),
-            "banner_url": request.build_absolute_uri(line_post.banner.url),
+            "image_url": request.build_absolute_uri(line_post.image.url).replace(
+                "http://", "https://"
+            ),
+            "banner_url": request.build_absolute_uri(line_post.banner.url).replace(
+                "http://", "https://"
+            ),
             "view_count": line_post.view_count,
             "created_at": line_post.created_at,
         }

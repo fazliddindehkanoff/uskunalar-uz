@@ -14,7 +14,7 @@ def list_banners(request) -> list:
                         "banner_image",
                         lang_code=lang_code,
                     ).url
-                ),
+                ).replace("http://", "https://"),
             }
         )
 
