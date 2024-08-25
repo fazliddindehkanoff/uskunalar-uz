@@ -56,6 +56,7 @@ def save_categories():
             sub_category = SubCategory.objects.filter(
                 id=sub_category_data.get("id")
             ).first()
+            print(sub_category_data.get("id"))
             if sub_category:
                 sub_category_image = download_image(sub_category_data.get("image"))
                 print(sub_category_image)

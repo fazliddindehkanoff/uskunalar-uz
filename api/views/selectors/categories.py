@@ -22,7 +22,7 @@ def list_categories(lang_code, request):
                     request.build_absolute_uri(category.icon.url)
                     if category.icon
                     else ""
-                ),
+                ).replace("http://", "https://"),
                 "title": category.get_translated_field("title", lang_code),
                 "product_count": category.category_products_set.count(),
             }
@@ -63,7 +63,7 @@ def list_subcategories(lang_code, request, category_id=None):
                     request.build_absolute_uri(subcategory.icon.url)
                     if subcategory.icon
                     else ""
-                ),
+                ).replace("http://", "https://"),
                 "title": subcategory.get_translated_field("title", lang_code),
                 "product_count": subcategory.subcategory_products_set.count(),
             }
