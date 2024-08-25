@@ -58,6 +58,7 @@ def save_categories():
             ).first()
             if sub_category:
                 sub_category_image = download_image(sub_category_data.get("image"))
+                print(sub_category_image)
                 sub_category.icon = sub_category_image
                 sub_category.save()
 
