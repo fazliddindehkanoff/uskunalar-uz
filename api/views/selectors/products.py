@@ -193,6 +193,7 @@ def list_products(
             | Q(short_description_ru__icontains=search_query)
             | Q(short_description_en__icontains=search_query)
             | Q(tags__icontains=search_query)
+            | Q(id=search_query)
         )
 
     if category_id != 0:
