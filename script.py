@@ -5,7 +5,6 @@ import requests
 from django.conf import settings
 from api.models import (
     Banner,
-    Category,
     PartnerLogos,
     LineCategory,
     Line,
@@ -53,37 +52,14 @@ def save_categories():
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
-    with open("data/sub-categorys.json", "r") as file:
-        category_data = json.load(file)
-
-    for data in category_data:
-        category = data["category"]
-        if category:
-            try:
-                Category.objects.create(
-                    id=category["id"],
-                    title_uz=category["category_uz"],
-                    title_en=category["category_en"],
-                    title_ru=category["category_ru"],
-                    order=category["my_order"],
-                    icon=download_image(category["image"]),
-                    created_at=category["created_at"],
-                )
-            except Exception:
-                pass
-
-        try:
-            SubCategory.objects.create(
-                id=data["id"],
-                title_uz=data["subcategory_uz"],
-                title_en=data["subcategory_en"],
-                title_ru=data["subcategory_ru"],
-                category_id=category["id"],
-                icon=download_image(data["image"]),
-                created_at=data["created_at"],
-            )
-        except Exception:
-            pass
+        for sub_category_data in data:
+            sub_category = SubCategory.objects.filter(
+                id=sub_category_data.get("id")
+            ).first()
+            if sub_category:
+                sub_category_image = download_image(sub_category_data.get("image"))
+                sub_category.icon = sub_category_image
+                sub_category.save()
 
 
 def save_partners():
