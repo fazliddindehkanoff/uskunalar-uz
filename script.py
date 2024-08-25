@@ -52,7 +52,7 @@ def save_categories():
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
-        for sub_category_data in data:
+        for sub_category_data in data["results"]:
             sub_category = SubCategory.objects.filter(
                 id=sub_category_data.get("id")
             ).first()
