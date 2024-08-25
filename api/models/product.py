@@ -26,9 +26,7 @@ class Supplier(TranslatableModel, BaseModel):
     )
 
     def __str__(self) -> str:
-        return (
-            f"{self.company_name} - cooperational status: {self.cooperational_status}"
-        )
+        return f"{self.company_name} - cooperational status: {self.cooperational_status}"  # noqa
 
 
 class Product(BaseModel, TranslatableModel):
@@ -84,6 +82,7 @@ class Product(BaseModel, TranslatableModel):
     created_by = models.ForeignKey(
         "CustomUser", on_delete=models.SET_NULL, null=True, blank=True
     )
+    video_url = models.CharField(max_length=255, null=True, blank=True)
 
     @classmethod
     def get_model_fields(cls):

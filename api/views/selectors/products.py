@@ -142,6 +142,7 @@ def product_detail(
                 lang_code=lang_code
             ),
             "cip_type": product.get_cip_type_display(),
+            "video_url": product.video_url,
             "view_count": product.view_count,
             "is_new": product.created_at >= timezone.now() - timedelta(days=7),
             "related_products": get_products_list(
@@ -272,6 +273,7 @@ def get_products_list(
                 if product.background_image
                 else ""
             ).replace("http://", "https://"),
+            "video_url": product.video_url,
             "cip_type": product.get_cip_type_display(),
             "availability_status_readable": product.get_availability_status_display(  # noqa
                 lang_code=lang_code

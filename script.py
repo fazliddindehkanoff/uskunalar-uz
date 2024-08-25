@@ -49,6 +49,10 @@ def download_image(url):
 
 
 def save_categories():
+    url = "https://api.uskunalar.uz/en/api-auth/sub_categories/?page=1&page_size=700"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
     with open("data/sub-categorys.json", "r") as file:
         category_data = json.load(file)
 
@@ -229,10 +233,10 @@ def save_videos():
 
 def main():
     # save_banner()
-    # save_categories()
+    save_categories()
     # save_partners()
     # save_line_categories()
     # save_lines()
     # save_work()
     # save_videos()
-    save_products()
+    # save_products()
