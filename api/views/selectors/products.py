@@ -185,16 +185,27 @@ def list_products(
     queryset = Product.objects.filter(approved=True)
 
     if search_query:
-        queryset = queryset.filter(
-            Q(name_uz__icontains=search_query)
-            | Q(name_ru__icontains=search_query)
-            | Q(name_en__icontains=search_query)
-            | Q(short_description_uz__icontains=search_query)
-            | Q(short_description_ru__icontains=search_query)
-            | Q(short_description_en__icontains=search_query)
-            | Q(tags__icontains=search_query)
-            | Q(id=search_query)
-        )
+        if search_query.isdigit():
+            queryset = queryset.filter(
+                Q(id=search_query)
+                | Q(name_uz__icontains=search_query)
+                | Q(name_ru__icontains=search_query)
+                | Q(name_en__icontains=search_query)
+                | Q(short_description_uz__icontains=search_query)
+                | Q(short_description_ru__icontains=search_query)
+                | Q(short_description_en__icontains=search_query)
+                | Q(tags__icontains=search_query)
+            )
+        else:
+            queryset = queryset.filter(
+                Q(name_uz__icontains=search_query)
+                | Q(name_ru__icontains=search_query)
+                | Q(name_en__icontains=search_query)
+                | Q(short_description_uz__icontains=search_query)
+                | Q(short_description_ru__icontains=search_query)
+                | Q(short_description_en__icontains=search_query)
+                | Q(tags__icontains=search_query)
+            )
 
     if category_id != 0:
         queryset = queryset.filter(category_id=category_id)
