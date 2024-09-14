@@ -245,6 +245,12 @@ UNFOLD = {
                         "link": reverse_lazy("admin:api_work_changelist"),
                         "permission": lambda request: request.user.is_superuser,
                     },
+                    {
+                        "title": _("Galleries"),
+                        "icon": "photo",
+                        "link": reverse_lazy("admin:api_gallery_changelist"),
+                        "permission": lambda request: request.user.is_superuser,
+                    },
                 ],
             },
             {
