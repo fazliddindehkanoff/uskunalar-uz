@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.db import models
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.http import HttpRequest
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from adminsortable2.admin import SortableAdminMixin
@@ -32,7 +33,21 @@ from .models import (
     Line,
     LineCategory,
     Video,
+    Gallery,
+    GalleryImage,
 )
+
+
+class GalleryImageInlineAdmin(TabularInline):
+    model = GalleryImage
+    extra = 1
+
+
+@admin.register(Gallery)
+class GalleryAdmin(ModelAdmin):
+    list_display = ("id", "title_uz", "title_en", "title_ru", "view_count")
+    readonly_fields = ["view_count"]
+    inlines = [GalleryImageInlineAdmin]
 
 
 class UnapprovedProduct(Product):
@@ -45,11 +60,13 @@ class UnapprovedProduct(Product):
 @admin.register(Work)
 class WorkAdmin(ModelAdmin):
     list_display = ("id", "title_uz")
+    readonly_fields = ["view_count"]
 
 
 @admin.register(Line)
 class LineAdmin(ModelAdmin):
     list_display = ("id", "title_uz")
+    readonly_fields = ["view_count"]
 
 
 @admin.register(LineCategory)
@@ -72,6 +89,7 @@ class CustomUserAdmin(BaseUserAdmin, ModelAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
     change_password_form = AdminPasswordChangeForm
+    autocomplete_fields = ["category", "subcategory"]
     list_display = (
         "username",
         "first_name",
@@ -125,21 +143,29 @@ class CustomUserAdmin(BaseUserAdmin, ModelAdmin):
 @admin.register(Blog)
 class BlogAdmin(ModelAdmin):
     list_display = ("title_uz", "title_en", "title_ru")
+    readonly_fields = ["view_count"]
 
 
 @admin.register(Supplier)
 class SupplierAdmin(ModelAdmin):
     search_fields = ["company_name"]
-    list_display = ("company_name", "experience")
+    list_display = ("id", "company_name", "experience", "display_logo")
+
+    def display_logo(self, instance: Supplier):
+        return mark_safe(f'<img src="{instance.logo.url}" width="100" height="100">')
+
+    display_logo.short_description = "Logo"
 
 
 @admin.register(Category)
 class CategoryAdmin(SortableAdminMixin, ModelAdmin):
+    search_fields = ["title_uz", "title_en", "title_ru"]
     list_display = ("id", "title_uz", "order")
 
 
 @admin.register(SubCategory)
 class SubCategoryAdmin(ModelAdmin):
+    search_fields = ["title_uz", "title_en", "title_ru"]
     list_display = ("id", "category", "title_uz")
 
 
@@ -251,6 +277,7 @@ class ProductAdmin(ModelAdmin):
         "category",
         "approved",
     ]
+    readonly_fields = ["view_count"]
 
     def get_list_display(self, request: HttpRequest) -> Sequence[str]:
         list_display = super().get_list_display(request)
@@ -280,6 +307,7 @@ class UnapprovedProductAdmin(ModelAdmin):
         "category",
         "approved",
     ]
+    readonly_fields = ["view_count"]
 
     def get_list_display(self, request: HttpRequest) -> Sequence[str]:
         list_display = super().get_list_display(request)

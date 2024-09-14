@@ -16,7 +16,11 @@ from .constants import (
 class Supplier(TranslatableModel, BaseModel):
     company_name = models.CharField(max_length=255)
     experience = models.IntegerField()
-    short_details = models.CharField(max_length=700)
+    short_details = RichTextField(
+        verbose_name="short details",
+        blank=True,
+        null=True,
+    )
     contact_email = models.EmailField()
     contact_phone = models.CharField(max_length=255)
     country = models.CharField(max_length=255)

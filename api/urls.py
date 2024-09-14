@@ -24,6 +24,8 @@ from api.views import (
     LineSitemapApiView,
     ProductSitemapApiView,
     VideoSitemapApiView,
+    GalleryListView,
+    GalleryDetailView,
 )
 
 urlpatterns = [
@@ -50,4 +52,6 @@ urlpatterns = [
     path("sitemaps/lines/", LineSitemapApiView.as_view()),
     path("sitemaps/works/", WorkSitemapApiView.as_view()),
     path("sitemaps/videos/", VideoSitemapApiView.as_view()),
+    path("galleries/", GalleryListView.as_view()),
+    path("galleries/<int:gallery_id>/", GalleryDetailView.as_view()),
 ]

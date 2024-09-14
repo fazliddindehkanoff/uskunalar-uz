@@ -27,3 +27,4 @@ from .sitemaps import (  # noqa
     VideoSitemapApiView,
     WorkSitemapApiView,
 )
+from .gallery import GalleryListView, GalleryDetailView  # noqa

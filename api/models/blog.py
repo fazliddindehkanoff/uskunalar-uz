@@ -65,3 +65,34 @@ class Work(TranslatableModel, BaseModel):
     )
     image = models.ImageField()
     view_count = models.IntegerField()
+
+
+class Gallery(BaseModel, TranslatableModel):
+    translations = TranslatedFields(
+        title=models.CharField(
+            max_length=250,
+            verbose_name="Title",
+            blank=True,
+        ),
+        short_description=models.TextField(
+            null=True,
+            verbose_name="short description",
+        ),
+        description=RichTextField(
+            verbose_name="Description",
+            blank=True,
+            null=True,
+        ),
+    )
+    video_url = models.CharField(max_length=255, null=True, blank=True)
+    view_count = models.IntegerField(default=0)
+
+    def __str__(self) -> str:
+        return self.title_uz
+
+
+class GalleryImage(BaseModel):
+    gallery = models.ForeignKey(
+        Gallery, on_delete=models.CASCADE, related_name="images"
+    )
+    image = models.ImageField()

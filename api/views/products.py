@@ -42,8 +42,8 @@ class ProductListAPIView(APIView):
         query = request.query_params.get("search")
         page = int(request.query_params.get("page", 1))
         page_size = int(request.query_params.get("page_size", 10))
-
         lang_code = request.META.get("HTTP_ACCEPT_LANGUAGE")
+
         return Response(
             list_products(
                 request=request,

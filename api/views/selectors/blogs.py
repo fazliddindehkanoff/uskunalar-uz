@@ -47,7 +47,11 @@ def get_blog_posts_list(queryset, lang_code, request):
             "id": post.pk,
             "title": post.get_translated_field("title", lang_code),
             "cover_url": (
-                request.build_absolute_uri(post.cover.url) if post.cover else ""
+                request.build_absolute_uri(
+                    post.cover.url,
+                )
+                if post.cover
+                else ""
             ).replace("http://", "https://"),
             "content": post.get_translated_field("content", lang_code),
             "view_count": post.view_count,
