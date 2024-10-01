@@ -212,7 +212,10 @@ class ProductAdmin(ModelAdmin):
         "related_products",
         "supplier",
     ]
-    exclude = ("created_by",)
+    exclude = ("created_by", "view_count")
+
+    class Media:
+        js = ("js/subcategory_filter.js",)  # Add your JS file here
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

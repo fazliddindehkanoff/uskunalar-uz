@@ -63,6 +63,7 @@ def get_gallery_detail(gallery_id, request, lang_code="uz"):
                 "description",
                 lang_code,
             ),
+            "video_url": gallery.video_url,
             "view_count": gallery.view_count,
             "created_at": gallery.created_at,
         }

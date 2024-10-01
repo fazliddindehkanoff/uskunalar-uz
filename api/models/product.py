@@ -36,9 +36,12 @@ class Supplier(TranslatableModel, BaseModel):
 class Product(BaseModel, TranslatableModel):
     approved = models.BooleanField(default=False)
     translations = TranslatedFields(
-        name=models.CharField(max_length=250, verbose_name="Name", blank=True),
+        name=models.CharField(
+            max_length=250, verbose_name="Name", blank=True, null=True
+        ),
         short_description=models.TextField(
             null=True,
+            blank=True,
             verbose_name="short description",
         ),
         description=RichTextField(
