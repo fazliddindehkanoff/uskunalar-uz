@@ -85,6 +85,7 @@ class Product(BaseModel, TranslatableModel):
         Supplier,
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
     )
     created_by = models.ForeignKey(
         "CustomUser", on_delete=models.SET_NULL, null=True, blank=True

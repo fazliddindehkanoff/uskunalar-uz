@@ -152,7 +152,9 @@ class SupplierAdmin(ModelAdmin):
     list_display = ("id", "company_name", "experience", "display_logo")
 
     def display_logo(self, instance: Supplier):
-        return mark_safe(f'<img src="{instance.logo.url}" width="100" height="100">')
+        return mark_safe(
+            f'<img src="{instance.logo.url}" width="100" height="100">',
+        )
 
     display_logo.short_description = "Logo"
 
@@ -215,7 +217,7 @@ class ProductAdmin(ModelAdmin):
     exclude = ("created_by", "view_count")
 
     class Media:
-        js = ("js/subcategory_filter.js",)  # Add your JS file here
+        js = ("js/subcategory_filter.js",)
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
