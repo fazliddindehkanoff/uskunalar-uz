@@ -30,7 +30,7 @@ def get_currency_rate():
 
     if response.status_code == 200:
         data = response.json()
-        return int(float(data[23]["nbu_buy_price"]))
+        return int(float(data[23]["nbu_cell_price"]))
     else:
         print(f"Failed to retrieve the page. {response.status_code}")
 
