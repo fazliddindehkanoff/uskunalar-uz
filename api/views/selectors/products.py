@@ -12,17 +12,26 @@ from .suppliers import get_supplier_data
 
 
 def _calc_product_cost(product: Product, currency_rate, in_uzs=False) -> str:
+    price = product.price
+    min_price = product.min_price
+    max_price = product.max_price
     if in_uzs:
+        extra_payment_percent = 13.5
         currency_symbol = ""
     else:
+        extra_payment_percent = 0
         currency_rate = 1
         currency_symbol = "$"
 
-    if product.price and product.price != 0:
-        return f"{currency_symbol}{product.price * currency_rate:,}"
-    elif product.min_price is not None and product.max_price is not None:
+    if price and price != 0:
+        price = price + (price * extra_payment_percent) / 100
+        return f"{currency_symbol}{price * currency_rate:,}"
+
+    elif min_price is not None and max_price is not None:
+        min_price = min_price + (min_price * extra_payment_percent) / 100
+        max_price = max_price + (max_price * extra_payment_percent) / 100
         try:
-            return f"{currency_symbol}{product.min_price * currency_rate:,} - {currency_symbol}{product.max_price * currency_rate:,}"  # noqa
+            return f"{currency_symbol}{min_price * currency_rate:,} - {currency_symbol}{max_price * currency_rate:,}"  # noqa
         except Exception:
             return f"there is an error with id:{product.pk}"
     return ""
@@ -40,12 +49,19 @@ def _calc_product_cost_with_disc(
     discount = product.discount
     currency_rate = currency_rate if in_uzs else 1
     currency_symbol = "" if in_uzs else "$"
+    extra_payment_percent = 13.5 if in_uzs else 0
+    price = product.price
+    min_price = product.min_price
+    max_price = product.max_price
+    min_discounted_price = discount_calc(min_price, discount)
+    max_discounted_price = discount_calc(max_price, discount)
+    discounted_price = discount_calc(price, discount)
 
     if discount > 0:
-        if product.price and product.price != 0:
-            return f"{currency_symbol}{discount_calc(product.price * currency_rate, discount):,}"  # noqa
+        if price and price != 0:
+            return f"{currency_symbol}{discounted_price + (discounted_price * extra_payment_percent)/100 :,}"  # noqa
         else:
-            return f"{currency_symbol}{discount_calc(product.min_price * currency_rate, discount):,} - {currency_symbol}{discount_calc(product.max_price * currency_rate, discount):,}"  # noqa
+            return f"{currency_symbol}{min_discounted_price + (min_discounted_price * extra_payment_percent)/100 :,} - {currency_symbol}{max_discounted_price + (max_discounted_price * extra_payment_percent)/100 :,}"  # noqa
     return ""
 
 
