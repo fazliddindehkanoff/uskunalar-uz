@@ -24,14 +24,21 @@ def _calc_product_cost(product: Product, currency_rate, in_uzs=False) -> str:
         currency_symbol = "$"
 
     if price and price != 0:
-        price = price + (price * extra_payment_percent) / 100
-        return f"{currency_symbol}{price * currency_rate:,}"
+        price += round(
+            ((price * extra_payment_percent) / 100) * currency_rate,
+            2,
+        )
+        return f"{currency_symbol}{price:,}"
 
     elif min_price is not None and max_price is not None:
-        min_price = min_price + (min_price * extra_payment_percent) / 100
-        max_price = max_price + (max_price * extra_payment_percent) / 100
+        min_price += round(
+            ((min_price * extra_payment_percent) / 100) * currency_rate, 2
+        )
+        max_price += round(
+            ((max_price * extra_payment_percent) / 100) * currency_rate, 2
+        )
         try:
-            return f"{currency_symbol}{min_price * currency_rate:,} - {currency_symbol}{max_price * currency_rate:,}"  # noqa
+            return f"{currency_symbol}{min_price:,} - {currency_symbol}{max_price:,}"  # noqa
         except Exception:
             return f"there is an error with id:{product.pk}"
     return ""
