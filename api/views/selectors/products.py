@@ -58,10 +58,16 @@ def _calc_product_cost_with_disc(
     min_price = product.min_price
     max_price = product.max_price
     if min_price is not None and max_price is not None:
-        min_discounted_price = discount_calc(min_price, discount)
-        max_discounted_price = discount_calc(max_price, discount)
+        min_discounted_price = discount_calc(
+            min_price * currency_rate,
+            discount,
+        )
+        max_discounted_price = discount_calc(
+            max_price * currency_rate,
+            discount,
+        )
     if price and price != 0:
-        discounted_price = discount_calc(price, discount)
+        discounted_price = discount_calc(price * currency_rate, discount)
 
     if discount > 0:
         if price and price != 0:
