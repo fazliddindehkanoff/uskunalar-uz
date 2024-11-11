@@ -24,9 +24,8 @@ def _calc_product_cost(product: Product, currency_rate, in_uzs=False) -> str:
         currency_symbol = "$"
 
     if price and price != 0:
-        price += round(
-            ((price * extra_payment_percent) / 100) * currency_rate,
-            2,
+        price = round(
+            (price + (price * extra_payment_percent) / 100) * currency_rate, 2
         )
         return f"{currency_symbol}{price:,}"
 
