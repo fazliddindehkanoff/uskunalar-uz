@@ -42,8 +42,8 @@ class Line(TranslatableModel, BaseModel):
             null=True,
         ),
     )
-    min_price = models.IntegerField(default=0)
-    max_price = models.IntegerField(default=0)
+    # min_price = models.IntegerField(default=0)
+    # max_price = models.IntegerField(default=0)
 
     price = models.IntegerField()
     category = models.ForeignKey(
