@@ -76,6 +76,28 @@ class LineImage(BaseModel):
     image = models.ImageField()
 
 
+class LineDocuments(models.Model):
+    line = models.ForeignKey(
+        Line,
+        on_delete=models.CASCADE,
+        related_name="documents",
+    )
+    file = models.FileField(upload_to="line_documents/")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Line Document"
+        verbose_name_plural = "Line Documents"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.file.name.split('/')[-1]
+
+    @property
+    def file_url(self):
+        return self.file.url if self.file else None
+
+
 class Work(TranslatableModel, BaseModel):
     translations = TranslatedFields(
         title=models.CharField(max_length=250, verbose_name="Title"),

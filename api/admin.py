@@ -35,6 +35,7 @@ from .models import (
     Video,
     Gallery,
     GalleryImage,
+    LineDocuments,
 )
 
 
@@ -63,10 +64,24 @@ class WorkAdmin(ModelAdmin):
     readonly_fields = ["view_count"]
 
 
+class LineDocumentsInline(TabularInline):
+    model = LineDocuments
+    extra = 1
+    readonly_fields = ['document_link']
+    fields = ['file', 'document_link']
+
+    def document_link(self, obj):
+        if obj.file:
+            return mark_safe(f'<a href="{obj.file.url}" target="_blank">Open Document</a>')
+        return "-"
+    document_link.short_description = "View Document"
+
+
 @admin.register(Line)
 class LineAdmin(ModelAdmin):
     list_display = ("id", "title_uz")
     readonly_fields = ["view_count"]
+    inlines = [LineDocumentsInline]
 
 
 @admin.register(LineCategory)
