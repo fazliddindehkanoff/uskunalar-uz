@@ -66,6 +66,8 @@ class Line(TranslatableModel, BaseModel):
     tag = models.CharField(max_length=250, null=True, blank=True)
     view_count = models.IntegerField()
 
+    def __str__(self) -> str:
+        return self.title_uz
 
 class LineImage(BaseModel):
     line = models.ForeignKey(
