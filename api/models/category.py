@@ -43,6 +43,9 @@ class LineCategory(TranslatableModel, BaseModel):
     )
     order = models.IntegerField()
 
+    def __str__(self) -> str:
+        return self.title_uz
+
     class Meta:
         verbose_name = "LineCategory"
         verbose_name_plural = "LineCategories"
