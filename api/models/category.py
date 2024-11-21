@@ -41,7 +41,9 @@ class LineCategory(TranslatableModel, BaseModel):
     translations = TranslatedFields(
         title=models.CharField(max_length=250, verbose_name="Title")
     )
+    order = models.IntegerField()
 
     class Meta:
         verbose_name = "LineCategory"
         verbose_name_plural = "LineCategories"
+        ordering = ["order"]

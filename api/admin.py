@@ -70,8 +70,8 @@ class LineAdmin(ModelAdmin):
 
 
 @admin.register(LineCategory)
-class LineCategoryAdmin(ModelAdmin):
-    list_display = ("id", "title_uz")
+class LineCategoryAdmin(SortableAdminMixin, ModelAdmin):
+    list_display = ("id", "title_uz", "order")
 
 
 @admin.register(Video)

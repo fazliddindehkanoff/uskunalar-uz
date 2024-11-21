@@ -1,6 +1,8 @@
 from django.db import models
 from ckeditor.fields import RichTextField
 
+from api.models.constants import CIP_STATUS_CHOISES
+
 from .category import LineCategory
 from config.models import BaseModel
 from .base import TranslatableModel, TranslatedFields
@@ -31,6 +33,7 @@ class Video(TranslatableModel, BaseModel):
 
 
 class Line(TranslatableModel, BaseModel):
+    approved = models.BooleanField(default=False)
     translations = TranslatedFields(
         title=models.CharField(max_length=250, verbose_name="Title"),
         short_description=models.TextField(
@@ -42,16 +45,35 @@ class Line(TranslatableModel, BaseModel):
             null=True,
         ),
     )
-    # min_price = models.IntegerField(default=0)
-    # max_price = models.IntegerField(default=0)
-
-    price = models.IntegerField()
+    min_price = models.IntegerField(default=0)
+    max_price = models.IntegerField(default=0)
+    discount_percent = models.IntegerField(default=0)
+    cip_type = models.IntegerField(default=1, choices=CIP_STATUS_CHOISES)
+    yt_link = models.CharField(max_length=250, null=True, blank=True)
+    price = models.IntegerField(default=0)
     category = models.ForeignKey(
         LineCategory, on_delete=models.CASCADE, related_name="lines"
     )
-    image = models.ImageField()
+    supplier = models.ForeignKey(
+        "Supplier",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    show_supplier_logo = models.BooleanField(default=False)
     banner = models.ImageField()
+    note = models.TextField(null=True, blank=True)
+    tag = models.CharField(max_length=250, null=True, blank=True)
     view_count = models.IntegerField()
+
+
+class LineImage(BaseModel):
+    line = models.ForeignKey(
+        Line,
+        on_delete=models.CASCADE,
+        related_name="images",
+    )
+    image = models.ImageField()
 
 
 class Work(TranslatableModel, BaseModel):
