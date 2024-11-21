@@ -81,10 +81,12 @@ class LineListAPIView(APIView):
         page = int(request.query_params.get("page", 1))
         page_size = int(request.query_params.get("page_size", 10))
         search_query = request.query_params.get("search")
+        category_id = int(request.query_params.get("category_id", 0))
         data = list_line_posts(
             request,
             lang_code,
             page=page,
+            category_id=category_id,
             page_size=page_size,
             search_query=search_query,
         )
