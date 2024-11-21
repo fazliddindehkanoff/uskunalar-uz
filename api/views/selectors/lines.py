@@ -78,7 +78,8 @@ def list_line_posts(
     page: int = 1,
     page_size: int = 10,
 ) -> dict:
-    queryset = Line.objects.all()
+    # Only show approved lines
+    queryset = Line.objects.filter(approved=True)
 
     if category_id > 0:
         queryset = queryset.filter(category_id=category_id)
@@ -174,7 +175,10 @@ def get_line_posts_list(queryset, lang_code, request):
 
 
 def line_post_detail(lang_code: str, line_post_id: int, request) -> dict:
-    line_post = Line.objects.filter(pk=line_post_id).first()
+    try:
+        line_post = Line.objects.get(pk=line_post_id, approved=True)
+    except Line.DoesNotExist:
+        raise NotFound("There is no line post with given id")
 
     if line_post:
         line_post.view_count += 1

@@ -36,11 +36,17 @@ from .models import (
     Gallery,
     GalleryImage,
     LineDocuments,
+    LineImage,
 )
 
 
 class GalleryImageInlineAdmin(TabularInline):
     model = GalleryImage
+    extra = 1
+
+
+class LineImageInlineAdmin(TabularInline):
+    model = LineImage
     extra = 1
 
 
@@ -67,13 +73,16 @@ class WorkAdmin(ModelAdmin):
 class LineDocumentsInline(TabularInline):
     model = LineDocuments
     extra = 1
-    readonly_fields = ['document_link']
-    fields = ['file', 'document_link']
+    readonly_fields = ["document_link"]
+    fields = ["file", "document_link"]
 
     def document_link(self, obj):
         if obj.file:
-            return mark_safe(f'<a href="{obj.file.url}" target="_blank">Open Document</a>')
+            return mark_safe(
+                f'<a href="{obj.file.url}" target="_blank">Open Document</a>'
+            )
         return "-"
+
     document_link.short_description = "View Document"
 
 
@@ -81,7 +90,7 @@ class LineDocumentsInline(TabularInline):
 class LineAdmin(ModelAdmin):
     list_display = ("id", "title_uz")
     readonly_fields = ["view_count"]
-    inlines = [LineDocumentsInline]
+    inlines = [LineDocumentsInline, LineImageInlineAdmin]
 
 
 @admin.register(LineCategory)
