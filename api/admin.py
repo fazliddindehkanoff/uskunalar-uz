@@ -73,17 +73,17 @@ class WorkAdmin(ModelAdmin):
 class LineDocumentsInline(TabularInline):
     model = LineDocuments
     extra = 1
-    readonly_fields = ["document_link"]
-    fields = ["file", "document_link"]
+    readonly_fields = ["open_document"]
+    fields = ["file_url", "open_document"]
 
-    def document_link(self, obj):
-        if obj.file:
+    def open_document(self, obj):
+        if obj.file_url:
             return mark_safe(
-                f'<a href="{obj.file.url}" target="_blank">Open Document</a>'
+                f'<a href="{obj.file_url}" target="_blank" class="button">Open Document</a>'
             )
         return "-"
 
-    document_link.short_description = "View Document"
+    open_document.short_description = "Document"
 
 
 @admin.register(Line)

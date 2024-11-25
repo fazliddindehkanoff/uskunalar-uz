@@ -69,6 +69,7 @@ class Line(TranslatableModel, BaseModel):
     def __str__(self) -> str:
         return self.title_uz
 
+
 class LineImage(BaseModel):
     line = models.ForeignKey(
         Line,
@@ -84,7 +85,7 @@ class LineDocuments(models.Model):
         on_delete=models.CASCADE,
         related_name="documents",
     )
-    file = models.FileField(upload_to="line_documents/")
+    file_url = models.URLField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -93,11 +94,7 @@ class LineDocuments(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return self.file.name.split('/')[-1]
-
-    @property
-    def file_url(self):
-        return self.file.url if self.file else None
+        return self.file_url
 
 
 class Work(TranslatableModel, BaseModel):
