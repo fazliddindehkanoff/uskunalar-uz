@@ -88,6 +88,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://www.uskunalar.uz",
     "https://uskunalaruz.netlify.app",
     "https://*.netlify.app",
+    "https://*.vercel.app",
 ]
 
 CORS_ALLOW_HEADERS = [
