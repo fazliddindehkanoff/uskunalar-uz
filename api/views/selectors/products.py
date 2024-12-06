@@ -110,6 +110,9 @@ def product_detail(
         if not product:
             raise NotFound("There is no product with given id")
 
+        if not product.approved:
+            raise NotFound("Bu mahsulot hozirda sotuvda mavjud emas")
+
         product.view_count += 1
         product.save()
 
@@ -161,6 +164,7 @@ def product_detail(
                 else None
             ),
             "category_id": product.category.id,
+            "subcategory_id": product.subcategory.id,
             "subcategory": (
                 product.subcategory.get_translated_field("title", lang_code)
                 if product.subcategory
@@ -188,6 +192,7 @@ def product_detail(
                 currency_rate=currency_rate,
             ),
             "supplier": get_supplier_data(product.supplier),
+            "tags": [tag for tag in product.tags.split(",")],
         }
 
         cache.set(cache_key, product_data, timeout=60 * 15)
