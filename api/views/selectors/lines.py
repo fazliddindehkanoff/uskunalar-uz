@@ -157,7 +157,7 @@ def get_line_posts_list(queryset, lang_code, request):
             ),
             "cip_type": post.get_cip_type_display(),
             "yt_link": post.yt_link,
-            "tags": [tag for tag in post.tag.split(",")],
+            "tags": [],
             "supplier": (
                 {
                     "id": post.supplier.id,
@@ -222,11 +222,7 @@ def line_post_detail(lang_code: str, line_post_id: int, request) -> dict:
             "long_description": line_post.get_translated_field(
                 "long_description", lang_code
             ),
-            "tags": (
-                [tag for tag in str(line_post.tag).split(",") if tag]
-                if line_post.tag
-                else []
-            ),
+            "tags": [],
             "images": [
                 request.build_absolute_uri(image.url).replace(
                     "http://",
