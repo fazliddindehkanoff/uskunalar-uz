@@ -222,7 +222,7 @@ def line_post_detail(lang_code: str, line_post_id: int, request) -> dict:
             "long_description": line_post.get_translated_field(
                 "long_description", lang_code
             ),
-            "tags": [tag for tag in line_post.tag.split(",")],
+            "tags": [tag for tag in line_post.tag.split(",") if line_post.tag],
             "images": [
                 request.build_absolute_uri(image.url).replace(
                     "http://",
