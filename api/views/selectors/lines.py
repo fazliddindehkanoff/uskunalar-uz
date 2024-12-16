@@ -96,7 +96,9 @@ def list_line_posts(
             Q(title_uz__icontains=search_query)
             | Q(title_ru__icontains=search_query)
             | Q(title_en__icontains=search_query)
-            | Q(short_description__icontains=search_query)
+            | Q(short_description_uz__icontains=search_query)
+            | Q(short_description_ru__icontains=search_query)
+            | Q(short_description_en__icontains=search_query)
             | Q(tag__icontains=search_query)
         )
 
