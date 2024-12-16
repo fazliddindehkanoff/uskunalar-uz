@@ -87,7 +87,9 @@ def list_line_posts(
     # Searching
     if search_query:
         queryset = queryset.filter(
-            Q(title__icontains=search_query)
+            Q(title_uz__icontains=search_query)
+            | Q(title_ru__icontains=search_query)
+            | Q(title_en__icontains=search_query)
             | Q(short_description__icontains=search_query)
             | Q(tag__icontains=search_query)
         )
@@ -153,21 +155,22 @@ def get_line_posts_list(queryset, lang_code, request):
             "price_with_discount_in_uzs": _calc_line_cost_with_disc(
                 line=post, in_uzs=True, currency_rate=currency_rate
             ),
-            "cip_type": post.cip_type,
+            "cip_type": post.get_cip_type_display(),
             "yt_link": post.yt_link,
-            "approved": post.approved,
-            "show_supplier_logo": post.show_supplier_logo,
-            "supplier": {
-                "id": post.supplier.id,
-                "name": post.supplier.name,
-                "logo_url": request.build_absolute_uri(
-                    post.supplier.logo.url,
-                ).replace("http://", "https://")
-                if post.show_supplier_logo and post.supplier and post.supplier.logo
-                else None,
-            }
-            if post.supplier
-            else None,
+            "tags": [tag for tag in post.tag.split(",")],
+            "supplier": (
+                {
+                    "id": post.supplier.id,
+                    "name": post.supplier.name,
+                    "logo_url": (
+                        request.build_absolute_uri(
+                            post.supplier.logo.url,
+                        ).replace("http://", "https://")
+                    ),
+                }
+                if post.supplier and post.show_supplier_logo
+                else None
+            ),
         }
         line_posts_data.append(post_data)
 
@@ -207,7 +210,7 @@ def line_post_detail(lang_code: str, line_post_id: int, request) -> dict:
             "price_with_discount_in_uzs": _calc_line_cost_with_disc(
                 line=line_post, in_uzs=True, currency_rate=currency_rate
             ),
-            "cip_type": line_post.cip_type,
+            "cip_type": line_post.get_cip_type_display(),
             "yt_link": line_post.yt_link,
             "category": line_post.category.get_translated_field(
                 "title",
@@ -219,6 +222,7 @@ def line_post_detail(lang_code: str, line_post_id: int, request) -> dict:
             "long_description": line_post.get_translated_field(
                 "long_description", lang_code
             ),
+            "tags": [tag for tag in line_post.tag.split(",")],
             "images": [
                 request.build_absolute_uri(image.url).replace(
                     "http://",
@@ -231,20 +235,21 @@ def line_post_detail(lang_code: str, line_post_id: int, request) -> dict:
             ).replace("http://", "https://"),
             "view_count": line_post.view_count,
             "created_at": line_post.created_at,
-            "approved": line_post.approved,
-            "note": line_post.note,
-            "show_supplier_logo": line_post.show_supplier_logo,
-            "supplier": {
-                "id": line_post.supplier.id,
-                "name": line_post.supplier.name,
-                "logo_url": request.build_absolute_uri(
-                    line_post.supplier.logo.url
-                ).replace("http://", "https://")
-                if line_post.supplier and line_post.supplier.logo
-                else None,
-            }
-            if line_post.supplier
-            else None,
+            "supplier": (
+                {
+                    "id": line_post.supplier.id,
+                    "name": line_post.supplier.name,
+                    "logo_url": (
+                        request.build_absolute_uri(line_post.supplier.logo.url).replace(
+                            "http://", "https://"
+                        )
+                        if line_post.supplier and line_post.supplier.logo
+                        else None
+                    ),
+                }
+                if line_post.supplier and line_post.show_supplier_logo
+                else None
+            ),
             "similar_lines": get_line_posts_list(
                 queryset=similar_lines, lang_code=lang_code, request=request
             ),
