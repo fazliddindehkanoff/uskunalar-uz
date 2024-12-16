@@ -223,7 +223,7 @@ def line_post_detail(lang_code: str, line_post_id: int, request) -> dict:
                 "long_description", lang_code
             ),
             "tags": (
-                [tag for tag in line_post.tag.split(",") if tag]
+                [tag for tag in str(line_post.tag).split(",") if tag]
                 if line_post.tag
                 else []
             ),
