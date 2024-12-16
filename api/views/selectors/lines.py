@@ -69,6 +69,12 @@ def discount_calc(price: int, discount: int) -> int:
     return price - (price * discount) // 100
 
 
+def get_tags_list(tags):
+    if tags:
+        return [tag for tag in tags.split(",")]
+    return []
+
+
 def list_line_posts(
     request,
     lang_code: str,
@@ -157,7 +163,7 @@ def get_line_posts_list(queryset, lang_code, request):
             ),
             "cip_type": post.get_cip_type_display(),
             "yt_link": post.yt_link,
-            "tags": [],
+            "tags": get_tags_list(post.tag),
             "supplier": (
                 {
                     "id": post.supplier.id,
@@ -222,7 +228,7 @@ def line_post_detail(lang_code: str, line_post_id: int, request) -> dict:
             "long_description": line_post.get_translated_field(
                 "long_description", lang_code
             ),
-            "tags": [],
+            "tags": get_tags_list(line_post.tag),
             "images": [
                 request.build_absolute_uri(image.url).replace(
                     "http://",
