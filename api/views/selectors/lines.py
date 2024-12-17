@@ -145,7 +145,7 @@ def get_line_posts_list(queryset, lang_code, request):
             "id": post.pk,
             "title": post.get_translated_field("title", lang_code),
             "images": [
-                request.build_absolute_uri(image.url).replace(
+                request.build_absolute_uri(image.image.url).replace(
                     "http://",
                     "https://",
                 )
