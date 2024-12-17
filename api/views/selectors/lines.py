@@ -244,7 +244,7 @@ def line_post_detail(lang_code: str, line_post_id: int, request) -> dict:
             ),
             "tags": get_tags_list(line_post.tag),
             "images": [
-                request.build_absolute_uri(image.url).replace(
+                request.build_absolute_uri(image.image.url).replace(
                     "http://",
                     "https://",
                 )
