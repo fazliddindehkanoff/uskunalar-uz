@@ -15,6 +15,10 @@ def _calc_product_cost(product: Product, currency_rate, in_uzs=False) -> str:
     price = product.price
     min_price = product.min_price
     max_price = product.max_price
+    price_extra = 0
+    min_price_extra = 0
+    max_price_extra = 0
+
     if in_uzs:
         extra_payment_percent = 13.5
         currency_symbol = ""
@@ -24,16 +28,25 @@ def _calc_product_cost(product: Product, currency_rate, in_uzs=False) -> str:
         currency_symbol = "$"
 
     if price and price != 0:
-        price += round(((price * extra_payment_percent) / 100) * currency_rate, 2)
+        price_extra += round(
+            ((price + (price * extra_payment_percent) / 100)) * currency_rate, 2
+        )
+        if in_uzs:
+            price += price_extra
         return f"{currency_symbol}{price:,}"
 
     elif min_price is not None and max_price is not None:
-        min_price += round(
-            ((min_price * extra_payment_percent) / 100) * currency_rate, 2
+        min_price_extra += round(
+            ((min_price + (min_price * extra_payment_percent) / 100)) * currency_rate, 2
         )
-        max_price += round(
-            ((max_price * extra_payment_percent) / 100) * currency_rate, 2
+        max_price_extra += round(
+            ((max_price + (max_price * extra_payment_percent) / 100)) * currency_rate, 2
         )
+
+        if in_uzs:
+            min_price += min_price_extra
+            max_price += max_price_extra
+
         try:
             return f"{currency_symbol}{min_price:,} - {currency_symbol}{max_price:,}"  # noqa
         except Exception:

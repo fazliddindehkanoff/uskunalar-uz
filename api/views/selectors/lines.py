@@ -9,26 +9,38 @@ def _calc_line_cost(line, currency_rate, in_uzs=False) -> str:
     price = line.price
     min_price = line.min_price
     max_price = line.max_price
+    price_extra = 0
+    min_price_extra = 0
+    max_price_extra = 0
 
     if in_uzs:
         extra_payment_percent = 13.5
         currency_symbol = ""
     else:
         extra_payment_percent = 0
+        print(price)
         currency_rate = 1
         currency_symbol = "$"
 
     if price and price != 0:
-        price += round(((price * extra_payment_percent) / 100) * currency_rate, 2)
+        price_extra += round(
+            ((price + (price * extra_payment_percent) / 100)) * currency_rate, 2
+        )
+        if in_uzs:
+            price += price_extra
+
         return f"{currency_symbol}{price:,}"
 
     elif min_price is not None and max_price is not None:
-        min_price += round(
+        min_price_extra += round(
             ((min_price * extra_payment_percent) / 100) * currency_rate, 2
         )
-        max_price += round(
+        max_price_extra += round(
             ((max_price * extra_payment_percent) / 100) * currency_rate, 2
         )
+        if in_uzs:
+            min_price += min_price_extra
+            max_price += max_price_extra
         try:
             return f"{currency_symbol}{min_price:,} - {currency_symbol}{max_price:,}"
         except Exception:
