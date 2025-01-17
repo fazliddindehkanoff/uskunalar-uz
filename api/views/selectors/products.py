@@ -204,7 +204,12 @@ def product_detail(
                 request=request,
                 currency_rate=currency_rate,
             ),
-            "supplier": get_supplier_data(product.supplier),
+            "country": product.supplier.country,
+            "supplier": (
+                get_supplier_data(product.supplier)
+                if product.show_supplier
+                else None  # noqa
+            ),
             "tags": [tag for tag in product.tags.split(",")],
         }
 
@@ -341,6 +346,12 @@ def get_products_list(
             ),
             "is_new": product.created_at >= timezone.now() - timedelta(days=7),
             "view_count": product.view_count,
+            "country": product.supplier.country,
+            "supplier": (
+                get_supplier_data(product.supplier)
+                if product.show_supplier
+                else None  # noqa
+            ),
             "specifications": [
                 {
                     "title": feature.get_translated_field("title", lang_code),
