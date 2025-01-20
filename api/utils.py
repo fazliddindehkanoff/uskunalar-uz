@@ -26,11 +26,11 @@ def generate_code() -> int:
 
 
 def get_currency_rate():
-    response = requests.get("https://nbu.uz/en/exchange-rates/json/")
+    response = requests.get("https://cbu.uz/en/arkhiv-kursov-valyut/json/")
 
     if response.status_code == 200:
         data = response.json()
-        return int(float(data[23]["nbu_cell_price"]))
+        return int(float(data[0]["rate"]))
     else:
         print(f"Failed to retrieve the page. {response.status_code}")
 
