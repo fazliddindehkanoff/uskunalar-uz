@@ -35,7 +35,7 @@ class Supplier(TranslatableModel, BaseModel):
 
 class Product(BaseModel, TranslatableModel):
     approved = models.BooleanField(default=False)
-    show_supplier = models.BooleanField(default=False)
+    show_supplier = models.BooleanField(default=True)
     translations = TranslatedFields(
         name=models.CharField(
             max_length=250, verbose_name="Name", blank=True, null=True

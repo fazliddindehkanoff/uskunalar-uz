@@ -8,7 +8,6 @@ from django.core.cache import cache
 
 from api.models import Product
 from api.utils import get_currency_rate, paginate_queryset
-from .suppliers import get_supplier_data
 
 
 def _calc_product_cost(product: Product, currency_rate, in_uzs=False) -> str:
@@ -205,11 +204,11 @@ def product_detail(
                 currency_rate=currency_rate,
             ),
             "country": product.supplier.country if product.supplier else "",
-            "supplier": (
-                get_supplier_data(product.supplier)
-                if product.show_supplier and product.supplier
-                else None  # noqa
-            ),
+            "supplier_logo": (
+                request.build_absolute_uri(product.supplier.logo.url)
+                if product.supplier and product.supplier.logo and product.show_supplier
+                else ""
+            ).replace("http://", "https://"),
             "tags": [tag for tag in product.tags.split(",")],
         }
 
@@ -347,11 +346,11 @@ def get_products_list(
             "is_new": product.created_at >= timezone.now() - timedelta(days=7),
             "view_count": product.view_count,
             "country": product.supplier.country if product.supplier else "",
-            "supplier": (
-                get_supplier_data(product.supplier)
-                if product.show_supplier and product.supplier
-                else None  # noqa
-            ),
+            "supplier_logo": (
+                request.build_absolute_uri(product.supplier.logo.url)
+                if product.supplier and product.supplier.logo and product.show_supplier
+                else ""
+            ).replace("http://", "https://"),
             "specifications": [
                 {
                     "title": feature.get_translated_field("title", lang_code),
