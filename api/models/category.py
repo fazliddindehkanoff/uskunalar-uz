@@ -1,4 +1,5 @@
 from django.db import models
+from ckeditor.fields import RichTextField
 
 from config.models import BaseModel
 from .base import TranslatableModel, TranslatedFields
@@ -7,6 +8,14 @@ from .base import TranslatableModel, TranslatedFields
 class Category(TranslatableModel, BaseModel):
     translations = TranslatedFields(
         title=models.CharField(max_length=250, verbose_name="Title")
+    )
+    meta_title = models.CharField(max_length=250, blank=True, null=True)
+    meta_description = models.TextField(blank=True, null=True)
+    meta_keywords = models.CharField(max_length=500, blank=True, null=True)
+    description = RichTextField(
+        verbose_name="Description",
+        blank=True,
+        null=True,
     )
     icon = models.FileField()
     available = models.BooleanField(default=True)
@@ -24,6 +33,14 @@ class Category(TranslatableModel, BaseModel):
 class SubCategory(TranslatableModel, BaseModel):
     translations = TranslatedFields(
         title=models.CharField(max_length=250, verbose_name="Title")
+    )
+    meta_title = models.CharField(max_length=250, blank=True, null=True)
+    meta_description = models.TextField(blank=True, null=True)
+    meta_keywords = models.CharField(max_length=500, blank=True, null=True)
+    description = RichTextField(
+        verbose_name="Description",
+        blank=True,
+        null=True,
     )
     category = models.ForeignKey("Category", on_delete=models.CASCADE)
     icon = models.FileField(null=True)

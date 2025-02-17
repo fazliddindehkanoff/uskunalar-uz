@@ -133,16 +133,24 @@ def product_detail(
             "price_in_usd": _calc_product_cost(
                 product=product, currency_rate=currency_rate
             ),
-            "price_in_uzs": _calc_product_cost(
-                product=product, in_uzs=True, currency_rate=currency_rate
+            "price_in_uzs": (
+                _calc_product_cost(
+                    product=product, in_uzs=True, currency_rate=currency_rate
+                )
+                if product.show_cost_in_uzs
+                else ""
             ),
             "has_discount": product.discount > 0,
             "discount_persentage": product.discount,
             "price_with_discount_in_usd": _calc_product_cost_with_disc(
                 product=product, currency_rate=currency_rate
             ),
-            "price_with_discount_in_uzs": _calc_product_cost_with_disc(
-                product=product, in_uzs=True, currency_rate=currency_rate
+            "price_with_discount_in_uzs": (
+                _calc_product_cost_with_disc(
+                    product=product, in_uzs=True, currency_rate=currency_rate
+                )
+                if product.show_cost_in_uzs
+                else ""
             ),
             "images": [
                 request.build_absolute_uri(image.image.url).replace(
@@ -292,8 +300,7 @@ def list_products(
         "page_size": page_size,
     }
 
-    cache.set(cache_key, updated_data, timeout=60 * 5)  # Cache for 15 minutes
-
+    cache.set(cache_key, updated_data, timeout=60 * 5)
     return updated_data
 
 
@@ -313,16 +320,24 @@ def get_products_list(
             "price_in_usd": _calc_product_cost(
                 product=product, currency_rate=currency_rate
             ),
-            "price_in_uzs": _calc_product_cost(
-                product=product, in_uzs=True, currency_rate=currency_rate
+            "price_in_uzs": (
+                _calc_product_cost(
+                    product=product, in_uzs=True, currency_rate=currency_rate
+                )
+                if product.show_cost_in_uzs
+                else ""
             ),
             "has_discount": product.discount > 0,
             "discount_persentage": product.discount,
             "price_with_discount_in_usd": _calc_product_cost_with_disc(
                 product=product, currency_rate=currency_rate
             ),
-            "price_with_discount_in_uzs": _calc_product_cost_with_disc(
-                product=product, in_uzs=True, currency_rate=currency_rate
+            "price_with_discount_in_uzs": (
+                _calc_product_cost_with_disc(
+                    product=product, in_uzs=True, currency_rate=currency_rate
+                )
+                if product.show_cost_in_uzs
+                else ""
             ),
             "images": [
                 request.build_absolute_uri(image.image.url).replace(
