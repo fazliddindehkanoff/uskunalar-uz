@@ -220,7 +220,7 @@ def product_detail(
             "tags": [tag for tag in product.tags.split(",")],
         }
 
-        cache.set(cache_key, product_data, timeout=60 * 5)
+        # cache.set(cache_key, product_data, timeout=60 * 5)
 
     return product_data
 
