@@ -24,10 +24,20 @@ def list_categories(lang_code, request):
                     else ""
                 ).replace("http://", "https://"),
                 "title": category.get_translated_field("title", lang_code),
-                "meta_title": category.meta_title,
-                "meta_description": category.meta_description,
-                "meta_keywords": category.meta_keywords,
-                "description": category.description,
+                "meta_title": category.get_translated_field(
+                    "meta_title",
+                    lang_code,
+                ),
+                "meta_description": category.get_translated_field(
+                    "meta_description", lang_code
+                ),
+                "meta_keywords": category.get_translated_field(
+                    "meta_keywords", lang_code
+                ),
+                "description": category.get_translated_field(
+                    "description",
+                    lang_code,
+                ),
                 "product_count": category.category_products_set.count(),
             }
             for category in categories
@@ -69,10 +79,19 @@ def list_subcategories(lang_code, request, category_id=None):
                     else ""
                 ).replace("http://", "https://"),
                 "title": subcategory.get_translated_field("title", lang_code),
-                "meta_title": subcategory.meta_title,
-                "meta_description": subcategory.meta_description,
-                "meta_keywords": subcategory.meta_keywords,
-                "description": subcategory.description,
+                "meta_title": subcategory.get_translated_field(
+                    "meta_title",
+                    lang_code,
+                ),
+                "meta_description": subcategory.get_translated_field(
+                    "meta_description", lang_code
+                ),
+                "meta_keywords": subcategory.get_translated_field(
+                    "meta_keywords", lang_code
+                ),
+                "description": subcategory.get_translated_field(
+                    "description", lang_code
+                ),
                 "product_count": subcategory.subcategory_products_set.count(),
             }
             for subcategory in subcategories

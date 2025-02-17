@@ -7,16 +7,23 @@ from .base import TranslatableModel, TranslatedFields
 
 class Category(TranslatableModel, BaseModel):
     translations = TranslatedFields(
-        title=models.CharField(max_length=250, verbose_name="Title")
+        title=models.CharField(max_length=250, verbose_name="Title"),
+        meta_title=models.CharField(
+            verbose_name="meta_title", max_length=250, blank=True, null=True
+        ),
+        meta_description=models.TextField(
+            verbose_name="meta_description", blank=True, null=True
+        ),
+        meta_keywords=models.CharField(
+            verbose_name="meta_keywords", max_length=500, blank=True, null=True
+        ),
+        description=RichTextField(
+            verbose_name="Description",
+            blank=True,
+            null=True,
+        ),
     )
-    meta_title = models.CharField(max_length=250, blank=True, null=True)
-    meta_description = models.TextField(blank=True, null=True)
-    meta_keywords = models.CharField(max_length=500, blank=True, null=True)
-    description = RichTextField(
-        verbose_name="Description",
-        blank=True,
-        null=True,
-    )
+
     icon = models.FileField()
     available = models.BooleanField(default=True)
     order = models.IntegerField()
@@ -32,16 +39,23 @@ class Category(TranslatableModel, BaseModel):
 
 class SubCategory(TranslatableModel, BaseModel):
     translations = TranslatedFields(
-        title=models.CharField(max_length=250, verbose_name="Title")
+        title=models.CharField(max_length=250, verbose_name="Title"),
+        meta_title=models.CharField(
+            verbose_name="meta_title", max_length=250, blank=True, null=True
+        ),
+        meta_description=models.TextField(
+            verbose_name="meta_description", blank=True, null=True
+        ),
+        meta_keywords=models.CharField(
+            verbose_name="meta_keywords", max_length=500, blank=True, null=True
+        ),
+        description=RichTextField(
+            verbose_name="Description",
+            blank=True,
+            null=True,
+        ),
     )
-    meta_title = models.CharField(max_length=250, blank=True, null=True)
-    meta_description = models.TextField(blank=True, null=True)
-    meta_keywords = models.CharField(max_length=500, blank=True, null=True)
-    description = RichTextField(
-        verbose_name="Description",
-        blank=True,
-        null=True,
-    )
+
     category = models.ForeignKey("Category", on_delete=models.CASCADE)
     icon = models.FileField(null=True)
     available = models.BooleanField(default=True)
