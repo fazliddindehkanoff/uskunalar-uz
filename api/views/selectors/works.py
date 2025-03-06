@@ -15,6 +15,7 @@ def get_works_list(queryset, lang_code, request):
             "image_url": request.build_absolute_uri(work.image.url).replace(
                 "http://", "https://"
             ),
+            "yt_url": work.yt_url,
             "view_count": work.view_count,
         }
         works_data.append(work_data)
