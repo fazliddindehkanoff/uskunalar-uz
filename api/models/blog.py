@@ -109,6 +109,7 @@ class Work(TranslatableModel, BaseModel):
             null=True,
         ),
     )
+    yt_url = models.CharField(max_length=250, null=True, blank=True)
     image = models.ImageField()
     view_count = models.IntegerField()
 

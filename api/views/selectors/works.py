@@ -78,5 +78,6 @@ def work_detail(lang_code: str, work_id: int, request) -> dict:
         "image_url": request.build_absolute_uri(work.image.url).replace(
             "http://", "https://"
         ),
+        "yt_url": work.yt_url,
         "view_count": work.view_count,
     }
