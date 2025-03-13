@@ -111,7 +111,7 @@ class Work(TranslatableModel, BaseModel):
     )
     yt_url = models.CharField(max_length=250, null=True, blank=True)
     image = models.ImageField()
-    view_count = models.IntegerField()
+    view_count = models.IntegerField(default=0)
 
 
 class Gallery(BaseModel, TranslatableModel):
