@@ -10,5 +10,12 @@ from .blog import (
     LineImage,
 )
 from .category import Category, SubCategory, LineCategory
-from .product import Product, ProductFeature, ProductImage, Supplier, Order
+from .product import (
+    Product,
+    ProductFeature,
+    ProductImage,
+    Supplier,
+    Order,
+    ProductPriceBasedOnModel,
+)
 from .banners import Banner, PartnerLogos, BackgroundBanner

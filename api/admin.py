@@ -37,6 +37,7 @@ from .models import (
     GalleryImage,
     LineDocuments,
     LineImage,
+    ProductPriceBasedOnModel,
 )
 
 
@@ -47,6 +48,11 @@ class GalleryImageInlineAdmin(TabularInline):
 
 class LineImageInlineAdmin(TabularInline):
     model = LineImage
+    extra = 1
+
+
+class ProductPriceBasedOnModelInlineAdmin(TabularInline):
+    model = ProductPriceBasedOnModel
     extra = 1
 
 
@@ -200,11 +206,6 @@ class ProductFeatureAdmin(ModelAdmin):
     pass
 
 
-@admin.register(ProductImage)
-class ProductImageAdmin(ModelAdmin):
-    pass
-
-
 class ProductFeatureInlineAdmin(TabularInline):
     model = ProductFeature
     extra = 1
@@ -315,7 +316,11 @@ class ProductAdmin(ModelAdmin):
 
         return list_display
 
-    inlines = [ProductFeatureInlineAdmin, ProductImageInlineAdmin]
+    inlines = [
+        ProductFeatureInlineAdmin,
+        ProductImageInlineAdmin,
+        ProductPriceBasedOnModelInlineAdmin,
+    ]
 
 
 @admin.register(UnapprovedProduct)

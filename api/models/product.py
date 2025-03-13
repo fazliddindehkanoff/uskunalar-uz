@@ -147,6 +147,15 @@ class ProductImage(BaseModel):
     image = models.ImageField()
 
 
+class ProductPriceBasedOnModel(BaseModel):
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="prices"
+    )
+    is_active = models.BooleanField(default=True)
+    model = models.CharField(max_length=255)
+    price = models.IntegerField()
+
+
 class Order(BaseModel):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="orders"
