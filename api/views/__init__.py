@@ -28,3 +28,4 @@ from .sitemaps import (  # noqa
     WorkSitemapApiView,
 )
 from .gallery import GalleryListView, GalleryDetailView  # noqa
+from .product_test import ProductDetailTestAPIView, ProductListTestAPIView  # noqa

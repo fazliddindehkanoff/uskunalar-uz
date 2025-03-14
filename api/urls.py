@@ -26,6 +26,8 @@ from api.views import (
     VideoSitemapApiView,
     GalleryListView,
     GalleryDetailView,
+    ProductDetailTestAPIView,
+    ProductListTestAPIView,
 )
 
 urlpatterns = [
@@ -46,6 +48,8 @@ urlpatterns = [
     path("videos/<int:pk>/", VideoDetailApiView.as_view()),
     path("products/", ProductListAPIView.as_view()),
     path("products/<str:pk>/", ProductDetailAPIView.as_view()),
+    path("products-test/", ProductListTestAPIView.as_view()),
+    path("products-test/<str:pk>/", ProductDetailTestAPIView.as_view()),
     path("works/", WorkListAPIView.as_view()),
     path("works/<int:pk>/", WorkDetailAPIView.as_view()),
     path("sitemaps/products/", ProductSitemapApiView.as_view()),
