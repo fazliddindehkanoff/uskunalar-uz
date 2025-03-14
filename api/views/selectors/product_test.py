@@ -393,12 +393,12 @@ def get_products_list(
                 ),
                 "min_price_in_uzs": (
                     product.min_price * currency_rate
-                    if product.show_cost_in_uzs
+                    if product.show_cost_in_uzs and product.min_price
                     else ""
                 ),
                 "max_price_in_uzs": (
                     product.max_price * currency_rate
-                    if product.show_cost_in_uzs
+                    if product.show_cost_in_uzs and product.max_price
                     else ""
                 ),
                 "price_with_discount_in_usd": _calc_product_cost_with_disc(
