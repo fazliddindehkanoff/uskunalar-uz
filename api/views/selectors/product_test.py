@@ -257,9 +257,6 @@ def list_products(
     page: int = 1,
     page_size: int = 10,
 ) -> dict:
-    cache_key = f"product_list_{category_id}_{sub_category_id}_{search_query}_{order_by}_{page}_{page_size}_{lang_code}"  # noqa
-    cached_data = cache.get(cache_key)
-
     # Query the total count of products matching the criteria
     queryset = Product.objects.filter(approved=True)
 
@@ -294,9 +291,9 @@ def list_products(
 
     total_count = queryset.count()
 
-    # Check if the total count in cache matches the current total count
-    if cached_data and cached_data["total_count"] == total_count:
-        return cached_data
+    # # Check if the total count in cache matches the current total count
+    # if cached_data and cached_data["total_count"] == total_count:
+    #     return cached_data
 
     if order_by:
         queryset = queryset.order_by(order_by)
@@ -321,7 +318,7 @@ def list_products(
         "page_size": page_size,
     }
 
-    cache.set(cache_key, updated_data, timeout=60 * 5)
+    # cache.set(cache_key, updated_data, timeout=60 * 5)
     return updated_data
 
 
