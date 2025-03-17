@@ -130,28 +130,8 @@ def product_detail(
 
         product_data = {
             "id": product.pk,
-            "price_in_usd": _calc_product_cost(
-                product=product, currency_rate=currency_rate
-            ),
-            "price_in_uzs": (
-                _calc_product_cost(
-                    product=product, in_uzs=True, currency_rate=currency_rate
-                )
-                if product.show_cost_in_uzs
-                else ""
-            ),
             "has_discount": product.discount > 0,
             "discount_persentage": product.discount,
-            "price_with_discount_in_usd": _calc_product_cost_with_disc(
-                product=product, currency_rate=currency_rate
-            ),
-            "price_with_discount_in_uzs": (
-                _calc_product_cost_with_disc(
-                    product=product, in_uzs=True, currency_rate=currency_rate
-                )
-                if product.show_cost_in_uzs
-                else ""
-            ),
             "images": [
                 request.build_absolute_uri(image.image.url).replace(
                     "http://", "https://"
@@ -193,7 +173,6 @@ def product_detail(
             "availability_status": product.get_availability_status_display(
                 lang_code=lang_code
             ),
-            "cip_type": product.get_cip_type_display(),
             "video_url": product.video_url,
             "view_count": product.view_count,
             "is_new": product.created_at >= timezone.now() - timedelta(days=7),
@@ -218,6 +197,48 @@ def product_detail(
                 else ""
             ).replace("http://", "https://"),
             "tags": [tag for tag in product.tags.split(",")],
+            "price": {
+                "incoterms": product.get_cip_type_display(),
+                "absolute_price_in_usd": product.price,
+                "min_price_in_usd": product.min_price,
+                "max_price_in_usd": product.max_price,
+                "absolute_price_in_uzs": (
+                    product.price * currency_rate
+                    if product.show_cost_in_uzs and product.price
+                    else ""
+                ),
+                "min_price_in_uzs": (
+                    product.min_price * currency_rate
+                    if product.show_cost_in_uzs and product.min_price
+                    else ""
+                ),
+                "max_price_in_uzs": (
+                    product.max_price * currency_rate
+                    if product.show_cost_in_uzs and product.max_price
+                    else ""
+                ),
+                "price_with_discount_in_usd": _calc_product_cost_with_disc(
+                    product=product, currency_rate=currency_rate
+                ),
+                "price_with_discount_in_uzs": (
+                    _calc_product_cost_with_disc(
+                        product=product,
+                        in_uzs=True,
+                        currency_rate=currency_rate,
+                    )
+                    if product.show_cost_in_uzs
+                    else ""
+                ),
+                "by_models": [
+                    {
+                        "name": product_price.model,
+                        "price_in_usd": product_price.price,
+                        "price_in_uzs": product_price.price * currency_rate,
+                        "is_active": product_price.is_active,
+                    }
+                    for product_price in product.prices.all()
+                ],
+            },
         }
 
         # cache.set(cache_key, product_data, timeout=60 * 5)
@@ -236,9 +257,6 @@ def list_products(
     page: int = 1,
     page_size: int = 10,
 ) -> dict:
-    cache_key = f"product_list_{category_id}_{sub_category_id}_{search_query}_{order_by}_{page}_{page_size}_{lang_code}"  # noqa
-    cached_data = cache.get(cache_key)
-
     # Query the total count of products matching the criteria
     queryset = Product.objects.filter(approved=True)
 
@@ -273,9 +291,9 @@ def list_products(
 
     total_count = queryset.count()
 
-    # Check if the total count in cache matches the current total count
-    if cached_data and cached_data["total_count"] == total_count:
-        return cached_data
+    # # Check if the total count in cache matches the current total count
+    # if cached_data and cached_data["total_count"] == total_count:
+    #     return cached_data
 
     if order_by:
         queryset = queryset.order_by(order_by)
@@ -300,7 +318,7 @@ def list_products(
         "page_size": page_size,
     }
 
-    cache.set(cache_key, updated_data, timeout=60 * 5)
+    # cache.set(cache_key, updated_data, timeout=60 * 5)
     return updated_data
 
 
@@ -313,6 +331,7 @@ def get_products_list(
 ):
     if product_ids:
         queryset = Product.objects.filter(pk__in=product_ids)
+
     return [
         {
             "id": product.pk,
@@ -329,16 +348,6 @@ def get_products_list(
             ),
             "has_discount": product.discount > 0,
             "discount_persentage": product.discount,
-            "price_with_discount_in_usd": _calc_product_cost_with_disc(
-                product=product, currency_rate=currency_rate
-            ),
-            "price_with_discount_in_uzs": (
-                _calc_product_cost_with_disc(
-                    product=product, in_uzs=True, currency_rate=currency_rate
-                )
-                if product.show_cost_in_uzs
-                else ""
-            ),
             "images": [
                 request.build_absolute_uri(image.image.url).replace(
                     "http://", "https://"
@@ -351,7 +360,6 @@ def get_products_list(
                 else ""
             ).replace("http://", "https://"),
             "video_url": product.video_url,
-            "cip_type": product.get_cip_type_display(),
             "availability_status_readable": product.get_availability_status_display(  # noqa
                 lang_code=lang_code
             ),
@@ -373,6 +381,48 @@ def get_products_list(
                 }
                 for feature in product.specifications.all()
             ],
+            "price": {
+                "incoterms": product.get_cip_type_display(),
+                "absolute_price_in_usd": product.price,
+                "min_price_in_usd": product.min_price,
+                "max_price_in_usd": product.max_price,
+                "absolute_price_in_uzs": (
+                    product.price * currency_rate
+                    if product.show_cost_in_uzs and product.price
+                    else ""
+                ),
+                "min_price_in_uzs": (
+                    product.min_price * currency_rate
+                    if product.show_cost_in_uzs and product.min_price
+                    else ""
+                ),
+                "max_price_in_uzs": (
+                    product.max_price * currency_rate
+                    if product.show_cost_in_uzs and product.max_price
+                    else ""
+                ),
+                "price_with_discount_in_usd": _calc_product_cost_with_disc(
+                    product=product, currency_rate=currency_rate
+                ),
+                "price_with_discount_in_uzs": (
+                    _calc_product_cost_with_disc(
+                        product=product,
+                        in_uzs=True,
+                        currency_rate=currency_rate,
+                    )
+                    if product.show_cost_in_uzs
+                    else ""
+                ),
+                "by_models": [
+                    {
+                        "name": product_price.model,
+                        "price_in_usd": product_price.price,
+                        "price_in_uzs": product_price.price * currency_rate,
+                        "is_active": product_price.is_active,
+                    }
+                    for product_price in product.prices.all()
+                ],
+            },
         }
         for product in queryset
     ]
