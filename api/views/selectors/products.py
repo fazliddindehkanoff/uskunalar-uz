@@ -184,7 +184,9 @@ def product_detail(
             ),
             "similar_products": get_products_list(
                 Product.objects.filter(
-                    category=product.category, subcategory=product.subcategory
+                    category=product.category,
+                    subcategory=product.subcategory,
+                    approved=True,
                 ).exclude(pk=product_id),
                 lang_code=lang_code,
                 request=request,
