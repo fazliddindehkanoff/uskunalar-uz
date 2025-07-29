@@ -13,6 +13,7 @@ class CustomUser(AbstractUser, LifecycleModel):
         ADMIN = "ADMIN", _("Admin")
         EDITOR = "EDITOR", _("Editor")
         USER = "USER", _("Foydalanuvchi")
+        COPYWRITER = "COPYWRITER", _("Copywriter")
 
     role = models.CharField(
         max_length=10, choices=UserRole.choices, default=UserRole.USER

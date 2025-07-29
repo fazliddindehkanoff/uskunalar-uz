@@ -27,6 +27,7 @@ EDITOR_LANG_CHOICES = [
     (1, "uz"),
     (2, "en"),
     (3, "ru"),
+    (4, "all"),
 ]
 
 AVAILABILITY_STATUS_CHOISES = [

@@ -267,26 +267,33 @@ class ProductAdmin(ModelAdmin):
 
     def get_form(self, request, obj: Product = None, **kwargs):
         excluded_fields = list(self.exclude) if self.exclude else []
-
-        if request.user.role == "EDITOR":
-            excluded_languages = ["_uz", "_ru", "_en"]
-            additional_fields_to_exclude = [
-                "category",
-                "subcategory",
+        user_language = request.user.get_language_display()
+        user_role = request.user.role
+        additional_fields_to_exclude = [
                 "approved",
                 "view_count",
                 "supplier",
                 "background_image",
             ]
-            user_language_suffix = f"_{request.user.get_language_display()}"
+        
+        if user_role == "EDITOR":
+            excluded_languages = ["_uz", "_ru", "_en"]
+            additional_fields_to_exclude.append("category")
+            additional_fields_to_exclude.append("subcategory")
+            user_language_suffix = f"_{user_language}"
+
             obj = obj if obj else Product
             for field in obj.translated_fields:
-                if field.endswith(user_language_suffix):
+                if field.endswith(user_language_suffix) or user_language == "all":
                     continue
 
                 for lang_suffix in excluded_languages:
                     if field.endswith(lang_suffix):
                         additional_fields_to_exclude.append(field)
+            excluded_fields.extend(additional_fields_to_exclude)
+
+        if user_role == "COPYWRITER":
+            obj = obj if obj else Product
             excluded_fields.extend(additional_fields_to_exclude)
 
         kwargs["exclude"] = excluded_fields
