@@ -136,7 +136,7 @@ class CustomUserAdmin(BaseUserAdmin, ModelAdmin):
                     ("first_name", "last_name"),
                     ("category", "subcategory"),
                     "language",
-                    "role",
+                    ("role", "is_staff"),
                 )
             },
         ),
