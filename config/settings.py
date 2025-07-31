@@ -235,25 +235,33 @@ UNFOLD = {
                         "title": _("Blog"),
                         "icon": "article",
                         "link": reverse_lazy("admin:api_blog_changelist"),
-                        "permission": lambda request: request.user.is_superuser,
+                        "permission": lambda request: request.user.has_perm(
+                            "api.view_blog"
+                        ),
                     },
                     {
                         "title": _("Videos"),
                         "icon": "video_library",
                         "link": reverse_lazy("admin:api_video_changelist"),
-                        "permission": lambda request: request.user.is_superuser,
+                        "permission": lambda request: request.user.has_perm(
+                            "api.view_video"
+                        ),
                     },
                     {
                         "title": _("Works"),
                         "icon": "work",
                         "link": reverse_lazy("admin:api_work_changelist"),
-                        "permission": lambda request: request.user.is_superuser,
+                        "permission": lambda request: request.user.has_perm(
+                            "api.view_work"
+                        ),
                     },
                     {
                         "title": _("Galleries"),
                         "icon": "photo",
                         "link": reverse_lazy("admin:api_gallery_changelist"),
-                        "permission": lambda request: request.user.is_superuser,
+                        "permission": lambda request: request.user.has_perm(
+                            "api.view_gallery"
+                        ),
                     },
                 ],
             },
@@ -266,13 +274,17 @@ UNFOLD = {
                         "title": _("Lines"),
                         "icon": "list",
                         "link": reverse_lazy("admin:api_line_changelist"),
-                        "permission": lambda request: request.user.is_superuser,
+                        "permission": lambda request: request.user.has_perm(
+                            "api.view_line"
+                        ),
                     },
                     {
                         "title": _("Line Categories"),
                         "icon": "list",
                         "link": reverse_lazy("admin:api_linecategory_changelist"),
-                        "permission": lambda request: request.user.is_superuser,
+                        "permission": lambda request: request.user.has_perm(
+                            "api.view_linecategory"
+                        ),
                     },
                 ],
             },

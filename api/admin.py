@@ -141,6 +141,7 @@ class CustomUserAdmin(BaseUserAdmin, ModelAdmin):
             },
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
+        (_("Permissions"), {"fields": ("user_permissions", "groups")}),
     )
     filter_horizontal = (
         "groups",
@@ -270,12 +271,12 @@ class ProductAdmin(ModelAdmin):
         user_language = request.user.get_language_display()
         user_role = request.user.role
         additional_fields_to_exclude = [
-                "approved",
-                "view_count",
-                "supplier",
-                "background_image",
-            ]
-        
+            "approved",
+            "view_count",
+            "supplier",
+            "background_image",
+        ]
+
         if user_role == "EDITOR":
             excluded_languages = ["_uz", "_ru", "_en"]
             additional_fields_to_exclude.append("category")
@@ -313,8 +314,10 @@ class ProductAdmin(ModelAdmin):
         "name_uz",
         "category",
         "approved",
+        "created_at",
     ]
     readonly_fields = ["view_count"]
+    ordering = ("-created_at",)
 
     def get_list_display(self, request: HttpRequest) -> Sequence[str]:
         list_display = super().get_list_display(request)
