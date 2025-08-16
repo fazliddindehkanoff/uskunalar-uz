@@ -35,6 +35,7 @@ class Supplier(TranslatableModel, BaseModel):
 
 class Product(BaseModel, TranslatableModel):
     approved = models.BooleanField(default=False)
+    show_cost = models.BooleanField(default=True)
     show_cost_in_uzs = models.BooleanField(default=True)
     show_supplier = models.BooleanField(default=True)
     translations = TranslatedFields(

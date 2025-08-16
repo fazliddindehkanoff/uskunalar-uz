@@ -18,6 +18,9 @@ def _calc_product_cost(product: Product, currency_rate, in_uzs=False) -> str:
     min_price_extra = 0
     max_price_extra = 0
 
+    if not product.show_cost:
+        return ""
+
     if in_uzs:
         extra_payment_percent = 13.5
         currency_symbol = ""
@@ -62,6 +65,10 @@ def _calc_product_cost_with_disc(
     currency_rate,
     in_uzs=False,
 ) -> str:
+
+    if not product.show_cost:
+        return ""
+
     discount = product.discount
     currency_rate = currency_rate if in_uzs else 1
     currency_symbol = "" if in_uzs else "$"
@@ -201,22 +208,22 @@ def product_detail(
             "tags": [tag for tag in product.tags.split(",")],
             "price": {
                 "incoterms": product.get_cip_type_display(),
-                "absolute_price_in_usd": product.price,
-                "min_price_in_usd": product.min_price,
-                "max_price_in_usd": product.max_price,
+                "absolute_price_in_usd": product.price if product.show_cost else "",
+                "min_price_in_usd": product.min_price if product.show_cost else "",
+                "max_price_in_usd": product.max_price if product.show_cost else "",
                 "absolute_price_in_uzs": (
                     product.price * currency_rate
-                    if product.show_cost_in_uzs and product.price
+                    if product.show_cost_in_uzs and product.show_cost and product.price
                     else ""
                 ),
                 "min_price_in_uzs": (
                     product.min_price * currency_rate
-                    if product.show_cost_in_uzs and product.min_price
+                    if product.show_cost_in_uzs and product.show_cost and product.min_price
                     else ""
                 ),
                 "max_price_in_uzs": (
                     product.max_price * currency_rate
-                    if product.show_cost_in_uzs and product.max_price
+                    if product.show_cost_in_uzs and product.show_cost and product.max_price
                     else ""
                 ),
                 "price_with_discount_in_usd": _calc_product_cost_with_disc(
@@ -234,8 +241,8 @@ def product_detail(
                 "by_models": [
                     {
                         "name": product_price.model,
-                        "price_in_usd": product_price.price,
-                        "price_in_uzs": product_price.price * currency_rate,
+                        "price_in_usd": product_price.price if product.show_cost else "",
+                        "price_in_uzs": product_price.price * currency_rate if product.show_cost_in_uzs and product.show_cost else "",
                         "is_active": product_price.is_active,
                     }
                     for product_price in product.prices.all()
@@ -385,22 +392,22 @@ def get_products_list(
             ],
             "price": {
                 "incoterms": product.get_cip_type_display(),
-                "absolute_price_in_usd": product.price,
-                "min_price_in_usd": product.min_price,
-                "max_price_in_usd": product.max_price,
+                "absolute_price_in_usd": product.price if product.show_cost else "",
+                "min_price_in_usd": product.min_price if product.show_cost else "",
+                "max_price_in_usd": product.max_price if product.show_cost else "",
                 "absolute_price_in_uzs": (
                     product.price * currency_rate
-                    if product.show_cost_in_uzs and product.price
+                    if product.show_cost_in_uzs and product.show_cost and product.price
                     else ""
                 ),
                 "min_price_in_uzs": (
                     product.min_price * currency_rate
-                    if product.show_cost_in_uzs and product.min_price
+                    if product.show_cost_in_uzs and product.show_cost and product.min_price
                     else ""
                 ),
                 "max_price_in_uzs": (
                     product.max_price * currency_rate
-                    if product.show_cost_in_uzs and product.max_price
+                    if product.show_cost_in_uzs and product.show_cost and product.max_price
                     else ""
                 ),
                 "price_with_discount_in_usd": _calc_product_cost_with_disc(
@@ -418,8 +425,8 @@ def get_products_list(
                 "by_models": [
                     {
                         "name": product_price.model,
-                        "price_in_usd": product_price.price,
-                        "price_in_uzs": product_price.price * currency_rate,
+                        "price_in_usd": product_price.price if product.show_cost else "",
+                        "price_in_uzs": product_price.price * currency_rate if product.show_cost_in_uzs and product.show_cost else "",
                         "is_active": product_price.is_active,
                     }
                     for product_price in product.prices.all()
