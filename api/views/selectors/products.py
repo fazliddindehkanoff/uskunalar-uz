@@ -137,6 +137,7 @@ def product_detail(
 
         product_data = {
             "id": product.pk,
+            "show_cost": product.show_cost,
             "has_discount": product.discount > 0,
             "discount_persentage": product.discount,
             "images": [
@@ -344,6 +345,7 @@ def get_products_list(
     return [
         {
             "id": product.pk,
+            "show_cost": product.show_cost,
             "name": product.get_translated_field("name", lang_code),
             "price_in_usd": _calc_product_cost(
                 product=product, currency_rate=currency_rate
