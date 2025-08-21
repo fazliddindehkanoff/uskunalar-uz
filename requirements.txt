@@ -44,7 +44,7 @@ PyJWT==2.8.0
 python-dotenv==0.21.1
 pytz==2024.1
 PyYAML==6.0.1
-requests==2.32.2
+requests==2.32.4
 requests-oauthlib==2.0.0
 rfc3986==1.5.0
 rsa==4.9
